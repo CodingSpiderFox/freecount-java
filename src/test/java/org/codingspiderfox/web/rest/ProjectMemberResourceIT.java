@@ -192,8 +192,12 @@ class ProjectMemberResourceIT {
         // Disconnect from session so that the updates on updatedProjectMember are not directly saved in db
         em.detach(updatedProjectMember);
 
+        // Add a new parent entity
+        Project project = ProjectResourceIT.createUpdatedEntity(em);
+        em.persist(project);
+        em.flush();
         // Update the Project with new association value
-        updatedProjectMember.setProject();
+        updatedProjectMember.setProject(project);
         ProjectMemberDTO updatedProjectMemberDTO = projectMemberMapper.toDto(updatedProjectMember);
         assertThat(updatedProjectMemberDTO).isNotNull();
 
