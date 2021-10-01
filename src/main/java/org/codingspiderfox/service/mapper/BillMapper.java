@@ -11,4 +11,9 @@ import org.mapstruct.*;
 public interface BillMapper extends EntityMapper<BillDTO, Bill> {
     @Mapping(target = "project", source = "project", qualifiedByName = "id")
     BillDTO toDto(Bill s);
+
+    @Named("id")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    BillDTO toDtoId(Bill bill);
 }

@@ -10,6 +10,7 @@
         "project": "Project",
         "projectSettings": "Project Settings",
         "bill": "Bill",
+        "billPosition": "Bill Position",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

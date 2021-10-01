@@ -7,6 +7,7 @@ import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
 import Project from './project';
 import ProjectSettings from './project-settings';
 import Bill from './bill';
+import BillPosition from './bill-position';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 const Routes = ({ match }) => (
@@ -16,6 +17,7 @@ const Routes = ({ match }) => (
       <ErrorBoundaryRoute path={`${match.url}project`} component={Project} />
       <ErrorBoundaryRoute path={`${match.url}project-settings`} component={ProjectSettings} />
       <ErrorBoundaryRoute path={`${match.url}bill`} component={Bill} />
+      <ErrorBoundaryRoute path={`${match.url}bill-position`} component={BillPosition} />
       {/* jhipster-needle-add-route-path - JHipster will add routes here */}
     </Switch>
   </div>

@@ -1,0 +1,27 @@
+{
+  "freecountApp": {
+    "billPosition": {
+      "home": {
+        "title": "Bill Positions",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Bill Position erstellen",
+        "createOrEditLabel": "Bill Position erstellen oder bearbeiten",
+        "search": "Suche nach Bill Position",
+        "notFound": "Keine Bill Positions gefunden"
+      },
+      "created": "Bill Position erstellt mit ID {{ param }}",
+      "updated": "Bill Position aktualisiert mit ID {{ param }}",
+      "deleted": "Bill Position gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Bill Position {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Bill Position"
+      },
+      "id": "ID",
+      "title": "Title",
+      "cost": "Cost",
+      "bill": "Bill"
+    }
+  }
+}
