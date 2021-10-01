@@ -1,0 +1,27 @@
+{
+  "freecountApp": {
+    "projectMember": {
+      "home": {
+        "title": "Project Members",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Project Member erstellen",
+        "createOrEditLabel": "Project Member erstellen oder bearbeiten",
+        "search": "Suche nach Project Member",
+        "notFound": "Keine Project Members gefunden"
+      },
+      "created": "Project Member erstellt mit ID {{ param }}",
+      "updated": "Project Member aktualisiert mit ID {{ param }}",
+      "deleted": "Project Member gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Project Member {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Project Member"
+      },
+      "id": "ID",
+      "additionalProjectPermissions": "Additional Project Permissions",
+      "user": "User",
+      "project": "Project"
+    }
+  }
+}

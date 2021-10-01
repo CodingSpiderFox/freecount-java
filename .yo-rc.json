@@ -42,7 +42,7 @@
     "languages": ["de"],
     "otherModules": [],
     "enableGradleEnterprise": false,
-    "lastLiquibaseTimestamp": 1633110940000,
-    "entities": ["Project", "ProjectSettings", "Bill", "BillPosition"]
+    "lastLiquibaseTimestamp": 1633112158000,
+    "entities": ["Project", "ProjectSettings", "Bill", "BillPosition", "ProjectMember"]
   }
 }

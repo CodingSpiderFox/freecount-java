@@ -1,0 +1,38 @@
+{
+  "fields": [
+    {
+      "fieldName": "additionalProjectPermissions",
+      "fieldType": "ProjectPermission",
+      "fieldValues": "CLOSE_PROJECT,CLOSE_BILL,ADD_MEMBER",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipName": "user",
+      "otherEntityName": "user",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": [],
+      "otherEntityField": "login",
+      "ownerSide": true,
+      "otherEntityRelationshipName": "projectMember"
+    },
+    {
+      "relationshipName": "project",
+      "otherEntityName": "project",
+      "relationshipType": "one-to-one",
+      "relationshipValidateRules": ["required"],
+      "otherEntityField": "id",
+      "ownerSide": true,
+      "id": true,
+      "otherEntityRelationshipName": "projectMember"
+    }
+  ],
+  "service": "serviceImpl",
+  "dto": "mapstruct",
+  "jpaMetamodelFiltering": true,
+  "readOnly": false,
+  "pagination": "infinite-scroll",
+  "name": "ProjectMember",
+  "changelogDate": "20211001181558"
+}
