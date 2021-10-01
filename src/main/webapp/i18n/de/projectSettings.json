@@ -1,0 +1,26 @@
+{
+  "freecountApp": {
+    "projectSettings": {
+      "home": {
+        "title": "Project Settings",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Project Settings erstellen",
+        "createOrEditLabel": "Project Settings erstellen oder bearbeiten",
+        "search": "Suche nach Project Settings",
+        "notFound": "Keine Project Settings gefunden"
+      },
+      "created": "Project Settings erstellt mit ID {{ param }}",
+      "updated": "Project Settings aktualisiert mit ID {{ param }}",
+      "deleted": "Project Settings gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Project Settings {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Project Settings"
+      },
+      "id": "ID",
+      "mustProvideBillCopyByDefault": "Must Provide Bill Copy By Default",
+      "project": "Project"
+    }
+  }
+}

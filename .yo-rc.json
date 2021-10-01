@@ -41,6 +41,8 @@
     "clientThemeVariant": "",
     "languages": ["de"],
     "otherModules": [],
-    "enableGradleEnterprise": false
+    "enableGradleEnterprise": false,
+    "lastLiquibaseTimestamp": 1633109198000,
+    "entities": ["Project", "ProjectSettings"]
   }
 }
