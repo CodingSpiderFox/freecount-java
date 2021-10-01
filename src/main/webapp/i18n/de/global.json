@@ -9,6 +9,7 @@
         "main": "Entitäten",
         "project": "Project",
         "projectSettings": "Project Settings",
+        "bill": "Bill",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

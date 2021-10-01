@@ -10,6 +10,8 @@ import userManagement from './user-management';
 import project from 'app/entities/project/project.reducer';
 // prettier-ignore
 import projectSettings from 'app/entities/project-settings/project-settings.reducer';
+// prettier-ignore
+import bill from 'app/entities/bill/bill.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 const rootReducer = {
@@ -20,6 +22,7 @@ const rootReducer = {
   userManagement,
   project,
   projectSettings,
+  bill,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar,
 };

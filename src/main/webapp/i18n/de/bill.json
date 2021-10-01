@@ -1,0 +1,26 @@
+{
+  "freecountApp": {
+    "bill": {
+      "home": {
+        "title": "Bills",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Bill erstellen",
+        "createOrEditLabel": "Bill erstellen oder bearbeiten",
+        "search": "Suche nach Bill",
+        "notFound": "Keine Bills gefunden"
+      },
+      "created": "Bill erstellt mit ID {{ param }}",
+      "updated": "Bill aktualisiert mit ID {{ param }}",
+      "deleted": "Bill gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Bill {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Bill"
+      },
+      "id": "ID",
+      "title": "Title",
+      "project": "Project"
+    }
+  }
+}

@@ -6,6 +6,7 @@ import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
 
 import Project from './project';
 import ProjectSettings from './project-settings';
+import Bill from './bill';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 const Routes = ({ match }) => (
@@ -14,6 +15,7 @@ const Routes = ({ match }) => (
       {/* prettier-ignore */}
       <ErrorBoundaryRoute path={`${match.url}project`} component={Project} />
       <ErrorBoundaryRoute path={`${match.url}project-settings`} component={ProjectSettings} />
+      <ErrorBoundaryRoute path={`${match.url}bill`} component={Bill} />
       {/* jhipster-needle-add-route-path - JHipster will add routes here */}
     </Switch>
   </div>

@@ -50,6 +50,7 @@ public class CacheConfiguration {
             createCache(cm, org.codingspiderfox.domain.User.class.getName() + ".authorities");
             createCache(cm, org.codingspiderfox.domain.Project.class.getName());
             createCache(cm, org.codingspiderfox.domain.ProjectSettings.class.getName());
+            createCache(cm, org.codingspiderfox.domain.Bill.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }
