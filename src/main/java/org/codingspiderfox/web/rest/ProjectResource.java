@@ -11,6 +11,7 @@ import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.codingspiderfox.repository.ProjectRepository;
+import org.codingspiderfox.service.ProjectCommandHandler;
 import org.codingspiderfox.service.ProjectQueryService;
 import org.codingspiderfox.service.ProjectService;
 import org.codingspiderfox.service.criteria.ProjectCriteria;
@@ -50,10 +51,13 @@ public class ProjectResource {
 
     private final ProjectQueryService projectQueryService;
 
-    public ProjectResource(ProjectService projectService, ProjectRepository projectRepository, ProjectQueryService projectQueryService) {
+    private final ProjectCommandHandler projectCommandHandler;
+
+    public ProjectResource(ProjectService projectService, ProjectRepository projectRepository, ProjectQueryService projectQueryService, ProjectCommandHandler projectCommandHandler) {
         this.projectService = projectService;
         this.projectRepository = projectRepository;
         this.projectQueryService = projectQueryService;
+        this.projectCommandHandler = projectCommandHandler;
     }
 
     /**
@@ -70,6 +74,26 @@ public class ProjectResource {
             throw new BadRequestAlertException("A new project cannot already have an ID", ENTITY_NAME, "idexists");
         }
         ProjectDTO result = projectService.save(projectDTO);
+        return ResponseEntity
+            .created(new URI("/api/projects/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * {@code POST  /projects} : Create a new project.
+     *
+     * @param projectDTO the projectDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new projectDTO, or with status {@code 400 (Bad Request)} if the project has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PostMapping("/projects-command")
+    public ResponseEntity<ProjectDTO> createProjectCommand(@Valid @RequestBody ProjectDTO projectDTO) throws URISyntaxException {
+        log.debug("REST request to save Project : {}", projectDTO);
+        if (projectDTO.getId() != null) {
+            throw new BadRequestAlertException("A new project cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        ProjectDTO result = projectCommandHandler.createProject(projectDTO);
         return ResponseEntity
             .created(new URI("/api/projects/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

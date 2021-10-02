@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.*;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.codingspiderfox.domain.enumeration.ProjectMemberRoleEnum;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -11,6 +14,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 /**
  * A ProjectMemberRole.
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "project_member_role")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

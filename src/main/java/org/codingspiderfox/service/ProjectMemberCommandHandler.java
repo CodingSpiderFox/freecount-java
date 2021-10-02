@@ -87,7 +87,7 @@ public class ProjectMemberCommandHandler {
             .findByProjectMemberRole(ProjectMemberRoleEnum.PROJECT_ADMIN)
             .stream()
             .findFirst()
-            .orElseThrow(() -> new IllegalStateException("Admin role not present"));
+            .orElseGet(() -> projectMemberRoleRepository.save(new ProjectMemberRole(null, ZonedDateTime.now(), ProjectMemberRoleEnum.PROJECT_ADMIN)));
 
         ProjectMemberRoleAssignment projectAdminRoleAssignment = new ProjectMemberRoleAssignment();
         Set<ProjectMemberRole> rolesSet = new HashSet<>();
@@ -159,7 +159,7 @@ public class ProjectMemberCommandHandler {
                     .findByProjectMemberRole(ProjectMemberRoleEnum.BILL_CONTRIBUTOR)
                     .stream()
                     .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Admin role not present"))
+                    .orElseGet(() -> projectMemberRoleRepository.save(new ProjectMemberRole(null, ZonedDateTime.now(), ProjectMemberRoleEnum.BILL_CONTRIBUTOR)))
             );
             return roles;
         });

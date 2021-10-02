@@ -1,28 +1,23 @@
 package org.codingspiderfox.service;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.codingspiderfox.domain.Project;
 import org.codingspiderfox.domain.User;
 import org.codingspiderfox.domain.User_;
-import org.codingspiderfox.repository.ProjectRepository;
 import org.codingspiderfox.repository.UserRepository;
-import org.codingspiderfox.repository.search.ProjectSearchRepository;
 import org.codingspiderfox.service.criteria.ProjectCriteria;
 import org.codingspiderfox.service.criteria.UserCriteria;
 import org.codingspiderfox.service.dto.ProjectDTO;
-import org.codingspiderfox.service.mapper.ProjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.jhipster.service.QueryService;
-import tech.jhipster.service.filter.LongFilter;
-import tech.jhipster.service.filter.RangeFilter;
 import tech.jhipster.service.filter.StringFilter;
 
 /**
@@ -50,6 +45,11 @@ public class UserQueryService extends QueryService<User> {
         userIdFilter.setIn(userIds);
         Specification<User> userIdInSpec = buildSpecification(userIdFilter, User_.id);
         return userRepository.findAll(userIdInSpec);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<User> findByLogin(String login) {
+        return userRepository.findOneByLogin(login);
     }
 
     /**

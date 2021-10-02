@@ -1,5 +1,8 @@
 package org.codingspiderfox.service.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -8,6 +11,8 @@ import javax.validation.constraints.*;
 /**
  * A DTO for the {@link org.codingspiderfox.domain.Project} entity.
  */
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProjectDTO implements Serializable {
 
     private Long id;

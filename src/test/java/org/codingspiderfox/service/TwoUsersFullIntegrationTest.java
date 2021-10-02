@@ -1,13 +1,23 @@
 package org.codingspiderfox.service;
 
 import lombok.SneakyThrows;
+import org.checkerframework.checker.units.UnitsTools;
 import org.codingspiderfox.IntegrationTest;
 import org.codingspiderfox.domain.FinanceAccount;
 import org.codingspiderfox.domain.Project;
 import org.codingspiderfox.domain.ProjectMember;
+import org.codingspiderfox.domain.ProjectMemberPermission;
+import org.codingspiderfox.domain.ProjectMemberPermissionAssignment;
+import org.codingspiderfox.domain.ProjectMemberPermissionAssignment_;
+import org.codingspiderfox.domain.ProjectMemberRole;
+import org.codingspiderfox.domain.ProjectMemberRoleAssignment;
 import org.codingspiderfox.domain.User;
 import org.codingspiderfox.repository.FinanceAccountRepository;
+import org.codingspiderfox.repository.ProjectMemberPermissionAssignmentRepository;
+import org.codingspiderfox.repository.ProjectMemberPermissionRepository;
 import org.codingspiderfox.repository.ProjectMemberRepository;
+import org.codingspiderfox.repository.ProjectMemberRoleAssignmentRepository;
+import org.codingspiderfox.repository.ProjectMemberRoleRepository;
 import org.codingspiderfox.repository.ProjectRepository;
 import org.codingspiderfox.repository.UserRepository;
 import org.codingspiderfox.service.dto.CreateProjectMemberDTO;
@@ -29,7 +39,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -76,19 +88,32 @@ class TwoUsersFullIntegrationTest {
     @Autowired
     private ProjectMemberMapper projectMemberMapper;
 
+    @Autowired
+    private ProjectMemberPermissionAssignmentRepository projectMemberPermissionAssignmentRepository;
+
+    @Autowired
+    private ProjectMemberRoleAssignmentRepository projectMemberRoleAssignmentRepository;
+
+    @Autowired
+    private ProjectMemberRoleRepository projectMemberRoleRepository;
+
+    @Autowired
+    private ProjectMemberPermissionRepository projectMemberPermissionRepository;
+
     @BeforeEach
     void setup() {
         userRepository.deleteAll();
-        user1 = createUser("user1");
+        user1 = createUser("user");
         user2 = createUser("user2");
         accountOfUser1 = createFinanceAccount(user1);
         accountOfUser2 = createFinanceAccount(user2);
         project = createProject(user1);
+        userRepository.saveAllAndFlush(Arrays.asList(user1, user2));
     }
 
     private Project createProject(User user1) {
         Project project = new Project();
-        project.setName("project");
+        project.setName("projectabcd");
         project.setKey("projectabcd");
         project.setCreateTimestamp(ZonedDateTime.now());
         return project;
@@ -98,10 +123,12 @@ class TwoUsersFullIntegrationTest {
     @Test
     @Transactional
     void createProjectAndCalculateBillSucceeds() {
+        List<User> users = userRepository.findAll();
+
         ProjectDTO projectDTO = projectMapper.toDto(project);
         mockMvc
             .perform(
-                post("/api/projects")
+                post("/api/projects-command")
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(TestUtil.convertObjectToJsonBytes(projectDTO))
@@ -110,6 +137,16 @@ class TwoUsersFullIntegrationTest {
 
         Project project = projectRepository.findAll().stream().findFirst().get();
         assertEquals("projectabcd", project.getKey());
+
+        List<ProjectMemberRole> projectMemberRoles = projectMemberRoleRepository.findAll();
+        List<ProjectMemberPermission> projectMemberPermissions = projectMemberPermissionRepository.findAll();
+
+        assertEquals(1, projectMemberRoles.size());
+
+        List<ProjectMemberPermissionAssignment> projectMemberPermissionAssignments = projectMemberPermissionAssignmentRepository.findAll();
+        List<ProjectMemberRoleAssignment> projectMemberRoleAssignments = projectMemberRoleAssignmentRepository.findAll();
+        assertEquals(0, projectMemberPermissionAssignments.size());
+        assertEquals(1, projectMemberRoleAssignments.size());
 
 
         ProjectMember member1 = new ProjectMember();
@@ -142,6 +179,7 @@ class TwoUsersFullIntegrationTest {
 
     private User createUser(String userName) {
         User result = new User();
+        result.setId(UUID.randomUUID().toString());
         result.setActivated(true);
         result.setLogin(userName);
 
