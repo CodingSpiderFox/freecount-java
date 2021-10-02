@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
+
 import org.codingspiderfox.IntegrationTest;
 import org.codingspiderfox.domain.Project;
 import org.codingspiderfox.domain.ProjectMember;
@@ -93,7 +94,7 @@ class ProjectMemberResourceIT {
 
     /**
      * Create an entity for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
@@ -117,7 +118,7 @@ class ProjectMemberResourceIT {
 
     /**
      * Create an updated entity for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
