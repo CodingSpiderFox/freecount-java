@@ -11,9 +11,11 @@ import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.codingspiderfox.repository.ProjectMemberRepository;
+import org.codingspiderfox.service.ProjectMemberCommandHandler;
 import org.codingspiderfox.service.ProjectMemberQueryService;
 import org.codingspiderfox.service.ProjectMemberService;
 import org.codingspiderfox.service.criteria.ProjectMemberCriteria;
+import org.codingspiderfox.service.dto.CreateProjectMemberDTO;
 import org.codingspiderfox.service.dto.ProjectMemberDTO;
 import org.codingspiderfox.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
@@ -50,14 +52,18 @@ public class ProjectMemberResource {
 
     private final ProjectMemberQueryService projectMemberQueryService;
 
+    private final ProjectMemberCommandHandler projectMemberCommandHandler;
+
     public ProjectMemberResource(
         ProjectMemberService projectMemberService,
         ProjectMemberRepository projectMemberRepository,
-        ProjectMemberQueryService projectMemberQueryService
+        ProjectMemberQueryService projectMemberQueryService,
+        ProjectMemberCommandHandler projectMemberCommandHandler
     ) {
         this.projectMemberService = projectMemberService;
         this.projectMemberRepository = projectMemberRepository;
         this.projectMemberQueryService = projectMemberQueryService;
+        this.projectMemberCommandHandler = projectMemberCommandHandler;
     }
 
     /**
@@ -68,16 +74,16 @@ public class ProjectMemberResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/project-members")
-    public ResponseEntity<ProjectMemberDTO> createProjectMember(@Valid @RequestBody ProjectMemberDTO projectMemberDTO)
+    public ResponseEntity<ProjectMemberDTO> createProjectMember(@Valid @RequestBody CreateProjectMemberDTO projectMemberDTO)
         throws URISyntaxException {
         log.debug("REST request to save ProjectMember : {}", projectMemberDTO);
         if (projectMemberDTO.getId() != null) {
             throw new BadRequestAlertException("A new projectMember cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        if (Objects.isNull(projectMemberDTO.getProject())) {
+        if (Objects.isNull(projectMemberDTO.getProjectId())) {
             throw new BadRequestAlertException("Invalid association value provided", ENTITY_NAME, "null");
         }
-        ProjectMemberDTO result = projectMemberService.save(projectMemberDTO);
+        ProjectMemberDTO result = projectMemberCommandHandler.createProjectMember(projectMemberDTO);
         return ResponseEntity
             .created(new URI("/api/project-members/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

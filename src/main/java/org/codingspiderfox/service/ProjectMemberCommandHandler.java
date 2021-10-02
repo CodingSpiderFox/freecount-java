@@ -27,6 +27,8 @@ import org.codingspiderfox.repository.ProjectMemberRoleAssignmentRepository;
 import org.codingspiderfox.repository.ProjectMemberRoleRepository;
 import org.codingspiderfox.repository.ProjectRepository;
 import org.codingspiderfox.security.SecurityUtils;
+import org.codingspiderfox.service.dto.CreateProjectMemberDTO;
+import org.codingspiderfox.service.dto.ProjectMemberDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +63,13 @@ public class ProjectMemberCommandHandler {
     private ProjectMemberRoleQueryService projectMemberRoleQueryService;
 
     private ExecutorService executor = Executors.newFixedThreadPool(10);
+
+    @Transactional
+    public ProjectMemberDTO createProjectMember(CreateProjectMemberDTO createProjectMemberDTO) {
+
+        addMembersToProjectWithDefaultPermissions(createProjectMemberDTO.getProjectId(), Arrays.asList(createProjectMemberDTO.getUserId()));
+        return new ProjectMemberDTO();
+    }
 
     @Transactional
     public ProjectMember addAsAdmin(User newAdmin, Project project) {

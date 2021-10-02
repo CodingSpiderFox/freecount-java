@@ -4,12 +4,17 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.*;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A ProjectMember.
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "project_member")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

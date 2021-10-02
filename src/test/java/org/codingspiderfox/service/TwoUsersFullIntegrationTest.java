@@ -4,12 +4,18 @@ import lombok.SneakyThrows;
 import org.codingspiderfox.IntegrationTest;
 import org.codingspiderfox.domain.FinanceAccount;
 import org.codingspiderfox.domain.Project;
+import org.codingspiderfox.domain.ProjectMember;
 import org.codingspiderfox.domain.User;
 import org.codingspiderfox.repository.FinanceAccountRepository;
+import org.codingspiderfox.repository.ProjectMemberRepository;
+import org.codingspiderfox.repository.ProjectRepository;
 import org.codingspiderfox.repository.UserRepository;
+import org.codingspiderfox.service.dto.CreateProjectMemberDTO;
 import org.codingspiderfox.service.dto.ProjectDTO;
+import org.codingspiderfox.service.dto.ProjectMemberDTO;
 import org.codingspiderfox.service.dto.UserDTO;
 import org.codingspiderfox.service.mapper.ProjectMapper;
+import org.codingspiderfox.service.mapper.ProjectMemberMapper;
 import org.codingspiderfox.web.rest.TestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +29,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,6 +58,12 @@ class TwoUsersFullIntegrationTest {
     @Autowired
     private ProjectMapper projectMapper;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private ProjectMemberRepository projectMemberRepository;
+
     private User user1;
     private User user2;
     private FinanceAccount accountOfUser1;
@@ -58,6 +72,9 @@ class TwoUsersFullIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ProjectMemberMapper projectMemberMapper;
 
     @BeforeEach
     void setup() {
@@ -72,7 +89,7 @@ class TwoUsersFullIntegrationTest {
     private Project createProject(User user1) {
         Project project = new Project();
         project.setName("project");
-        project.setKey("project");
+        project.setKey("projectabcd");
         project.setCreateTimestamp(ZonedDateTime.now());
         return project;
     }
@@ -90,6 +107,28 @@ class TwoUsersFullIntegrationTest {
                     .content(TestUtil.convertObjectToJsonBytes(projectDTO))
             )
             .andExpect(status().isCreated());
+
+        Project project = projectRepository.findAll().stream().findFirst().get();
+        assertEquals("projectacbcd", project.getKey());
+
+
+        ProjectMember member1 = new ProjectMember();
+        member1.setProject(project);
+        member1.setUser(user2);
+        CreateProjectMemberDTO projectMemberDTO = new CreateProjectMemberDTO(null, user2.getId(), project.getId());
+
+        mockMvc
+            .perform(post("/api/project-members")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.convertObjectToJsonBytes(projectMemberDTO))
+            )
+            .andExpect(status().isCreated());
+
+        List<ProjectMember> projectMembers = projectMemberRepository.findAll();
+        //we expect an admin to be implicitly created on project creation and the one member we added manually
+        assertEquals(2, projectMembers.size());
+
     }
 
     private FinanceAccount createFinanceAccount(User owner) {
