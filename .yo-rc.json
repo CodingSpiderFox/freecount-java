@@ -42,7 +42,7 @@
     "languages": ["de"],
     "otherModules": [],
     "enableGradleEnterprise": false,
-    "lastLiquibaseTimestamp": 1633167324000,
+    "lastLiquibaseTimestamp": 1633179354000,
     "entities": [
       "Project",
       "ProjectSettings",
@@ -52,7 +52,11 @@
       "Product",
       "Stock",
       "FinanceAccount",
-      "FinanceTransactions"
+      "FinanceTransactions",
+      "ProjectMemberRole",
+      "ProjectMemberPermission",
+      "ProjectMemberRoleAssignment",
+      "ProjectMemberPermissionAssignment"
     ]
   }
 }

@@ -1,9 +1,9 @@
 package org.codingspiderfox.domain.enumeration;
 
 /**
- * The ProjectPermission enumeration.
+ * The ProjectMemberPermissionEnum enumeration.
  */
-public enum ProjectPermission {
+public enum ProjectMemberPermissionEnum {
     CLOSE_PROJECT,
     CLOSE_BILL,
     ADD_MEMBER,

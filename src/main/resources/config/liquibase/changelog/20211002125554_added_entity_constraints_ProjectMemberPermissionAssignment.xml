@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+    <!--
+        Added the constraints for entity ProjectMemberPermissionAssignment.
+    -->
+    <changeSet id="20211002125554-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="id"
+                                 baseTableName="proj_member_permiss_assign"
+                                 constraintName="fk_proj_member_permiss_assign__project_member_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project_member"/>
+
+        <addForeignKeyConstraint baseColumnNames="proj_member_permiss_assign_id"
+                                 baseTableName="rel_proj_member_permiss_assign__project_member_permission"
+                                 constraintName="fk_rel_proj_member_permiss_assi__proj_member_permiss_assi_cb_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="proj_member_permiss_assign"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_member_permission_id"
+                                 baseTableName="rel_proj_member_permiss_assign__project_member_permission"
+                                 constraintName="fk_rel_proj_member_permiss_assi__project_member_permissio_55_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project_member_permission"/>
+    </changeSet>
+</databaseChangeLog>

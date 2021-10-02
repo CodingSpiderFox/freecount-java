@@ -1,0 +1,23 @@
+{
+  "fields": [
+    {
+      "fieldName": "createdTimestamp",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "projectMemberPermission",
+      "fieldType": "ProjectMemberPermissionEnum",
+      "fieldValues": "CLOSE_PROJECT,CLOSE_BILL,ADD_MEMBER",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [],
+  "service": "serviceImpl",
+  "dto": "mapstruct",
+  "jpaMetamodelFiltering": true,
+  "readOnly": false,
+  "pagination": "infinite-scroll",
+  "name": "ProjectMemberPermission",
+  "changelogDate": "20211002125244"
+}

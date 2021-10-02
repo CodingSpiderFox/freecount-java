@@ -7,7 +7,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -219,15 +218,8 @@ class BillPositionResourceIT {
         // Disconnect from session so that the updates on updatedBillPosition are not directly saved in db
         em.detach(updatedBillPosition);
 
-        Product product = new Product();
-        product.setTitle("product");
-        product.setScannerId("scannerId");
-        product.setUsualDurationFromBuyTillExpire(Duration.ofDays(365));
-        product.setDefaultPrice(1.99);
-        em.persist(product);
-        em.flush();
         // Update the Product with new association value
-        updatedBillPosition.setProduct(product);
+        updatedBillPosition.setProduct();
         BillPositionDTO updatedBillPositionDTO = billPositionMapper.toDto(updatedBillPosition);
         assertThat(updatedBillPositionDTO).isNotNull();
 

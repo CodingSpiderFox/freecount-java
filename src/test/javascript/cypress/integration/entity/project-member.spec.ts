@@ -103,11 +103,7 @@ describe('ProjectMember e2e test', () => {
     cy.get(entityCreateButtonSelector).click({ force: true });
     cy.getEntityCreateUpdateHeading('ProjectMember');
 
-    cy.get(`[data-cy="additionalProjectPermissions"]`).select('ADD_MEMBER');
-
-    cy.get(`[data-cy="roleInProject"]`).select('BILL_CONTRIBUTOR');
-
-    cy.get(`[data-cy="addedTimestamp"]`).type('2021-10-01T09:04').should('have.value', '2021-10-01T09:04');
+    cy.get(`[data-cy="addedTimestamp"]`).type('2021-09-30T22:30').should('have.value', '2021-09-30T22:30');
 
     cy.setFieldSelectToLastOfEntity('user');
 

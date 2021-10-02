@@ -1,9 +1,26 @@
 {
   "freecountApp": {
-    "ProjectMemberRole": {
-      "null": "",
-      "PROJECT_ADMIN": "PROJECT_ADMIN",
-      "BILL_CONTRIBUTOR": "BILL_CONTRIBUTOR"
+    "projectMemberRole": {
+      "home": {
+        "title": "Project Member Roles",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Project Member Role erstellen",
+        "createOrEditLabel": "Project Member Role erstellen oder bearbeiten",
+        "search": "Suche nach Project Member Role",
+        "notFound": "Keine Project Member Roles gefunden"
+      },
+      "created": "Project Member Role erstellt mit ID {{ param }}",
+      "updated": "Project Member Role aktualisiert mit ID {{ param }}",
+      "deleted": "Project Member Role gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Project Member Role {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Project Member Role"
+      },
+      "id": "ID",
+      "createdTimestamp": "Created Timestamp",
+      "projectMemberRole": "Project Member Role"
     }
   }
 }

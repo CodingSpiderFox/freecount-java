@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import org.codingspiderfox.domain.enumeration.ProjectMemberRole;
-import org.codingspiderfox.domain.enumeration.ProjectPermission;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -23,16 +21,6 @@ public class ProjectMember implements Serializable {
     @Id
     @Column(name = "id")
     private Long id;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "additional_project_permissions", nullable = false)
-    private ProjectPermission additionalProjectPermissions;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role_in_project", nullable = false)
-    private ProjectMemberRole roleInProject;
 
     @NotNull
     @Column(name = "added_timestamp", nullable = false)
@@ -60,32 +48,6 @@ public class ProjectMember implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public ProjectPermission getAdditionalProjectPermissions() {
-        return this.additionalProjectPermissions;
-    }
-
-    public ProjectMember additionalProjectPermissions(ProjectPermission additionalProjectPermissions) {
-        this.setAdditionalProjectPermissions(additionalProjectPermissions);
-        return this;
-    }
-
-    public void setAdditionalProjectPermissions(ProjectPermission additionalProjectPermissions) {
-        this.additionalProjectPermissions = additionalProjectPermissions;
-    }
-
-    public ProjectMemberRole getRoleInProject() {
-        return this.roleInProject;
-    }
-
-    public ProjectMember roleInProject(ProjectMemberRole roleInProject) {
-        this.setRoleInProject(roleInProject);
-        return this;
-    }
-
-    public void setRoleInProject(ProjectMemberRole roleInProject) {
-        this.roleInProject = roleInProject;
     }
 
     public ZonedDateTime getAddedTimestamp() {
@@ -151,8 +113,6 @@ public class ProjectMember implements Serializable {
     public String toString() {
         return "ProjectMember{" +
             "id=" + getId() +
-            ", additionalProjectPermissions='" + getAdditionalProjectPermissions() + "'" +
-            ", roleInProject='" + getRoleInProject() + "'" +
             ", addedTimestamp='" + getAddedTimestamp() + "'" +
             "}";
     }

@@ -191,16 +191,6 @@ export const ProjectMember = (props: RouteComponentProps<{ url: string }>) => {
                   <th className="hand" onClick={sort('id')}>
                     <Translate contentKey="freecountApp.projectMember.id">ID</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th className="hand" onClick={sort('additionalProjectPermissions')}>
-                    <Translate contentKey="freecountApp.projectMember.additionalProjectPermissions">
-                      Additional Project Permissions
-                    </Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('roleInProject')}>
-                    <Translate contentKey="freecountApp.projectMember.roleInProject">Role In Project</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th className="hand" onClick={sort('addedTimestamp')}>
                     <Translate contentKey="freecountApp.projectMember.addedTimestamp">Added Timestamp</Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
@@ -221,12 +211,6 @@ export const ProjectMember = (props: RouteComponentProps<{ url: string }>) => {
                       <Button tag={Link} to={`${match.url}/${projectMember.id}`} color="link" size="sm">
                         {projectMember.id}
                       </Button>
-                    </td>
-                    <td>
-                      <Translate contentKey={`freecountApp.ProjectPermission.${projectMember.additionalProjectPermissions}`} />
-                    </td>
-                    <td>
-                      <Translate contentKey={`freecountApp.ProjectMemberRole.${projectMember.roleInProject}`} />
                     </td>
                     <td>
                       {projectMember.addedTimestamp ? (

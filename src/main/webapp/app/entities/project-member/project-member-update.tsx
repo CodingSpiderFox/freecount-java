@@ -68,8 +68,6 @@ export const ProjectMemberUpdate = (props: RouteComponentProps<{ id: string }>) 
           addedTimestamp: displayDefaultDateTime(),
         }
       : {
-          additionalProjectPermissions: 'CLOSE_PROJECT',
-          roleInProject: 'PROJECT_ADMIN',
           ...projectMemberEntity,
           addedTimestamp: convertDateTimeFromServer(projectMemberEntity.addedTimestamp),
           userId: projectMemberEntity?.user?.id,
@@ -101,27 +99,6 @@ export const ProjectMemberUpdate = (props: RouteComponentProps<{ id: string }>) 
                   validate={{ required: true }}
                 />
               ) : null}
-              <ValidatedField
-                label={translate('freecountApp.projectMember.additionalProjectPermissions')}
-                id="project-member-additionalProjectPermissions"
-                name="additionalProjectPermissions"
-                data-cy="additionalProjectPermissions"
-                type="select"
-              >
-                <option value="CLOSE_PROJECT">{translate('freecountApp.ProjectPermission.CLOSE_PROJECT')}</option>
-                <option value="CLOSE_BILL">{translate('freecountApp.ProjectPermission.CLOSE_BILL')}</option>
-                <option value="ADD_MEMBER">{translate('freecountApp.ProjectPermission.ADD_MEMBER')}</option>
-              </ValidatedField>
-              <ValidatedField
-                label={translate('freecountApp.projectMember.roleInProject')}
-                id="project-member-roleInProject"
-                name="roleInProject"
-                data-cy="roleInProject"
-                type="select"
-              >
-                <option value="PROJECT_ADMIN">{translate('freecountApp.ProjectMemberRole.PROJECT_ADMIN')}</option>
-                <option value="BILL_CONTRIBUTOR">{translate('freecountApp.ProjectMemberRole.BILL_CONTRIBUTOR')}</option>
-              </ValidatedField>
               <ValidatedField
                 label={translate('freecountApp.projectMember.addedTimestamp')}
                 id="project-member-addedTimestamp"

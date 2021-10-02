@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+    <!--
+        Added the constraints for entity ProjectMemberRoleAssignment.
+    -->
+    <changeSet id="20211002125409-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="id"
+                                 baseTableName="project_member_role_assignment"
+                                 constraintName="fk_project_member_role_assignment__project_member_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project_member"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_member_role_assignment_id"
+                                 baseTableName="rel_project_member_role_assignment__project_member_role"
+                                 constraintName="fk_rel_project_member_role_assi__project_member_role_assi_81_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project_member_role_assignment"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_member_role_id"
+                                 baseTableName="rel_project_member_role_assignment__project_member_role"
+                                 constraintName="fk_rel_project_member_role_assi__project_member_role_4c_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project_member_role"/>
+    </changeSet>
+</databaseChangeLog>

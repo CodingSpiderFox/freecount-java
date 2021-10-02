@@ -1,0 +1,23 @@
+{
+  "fields": [
+    {
+      "fieldName": "createdTimestamp",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "projectMemberRole",
+      "fieldType": "ProjectMemberRoleEnum",
+      "fieldValues": "Y",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [],
+  "service": "serviceImpl",
+  "dto": "mapstruct",
+  "jpaMetamodelFiltering": true,
+  "readOnly": false,
+  "pagination": "infinite-scroll",
+  "name": "ProjectMemberRole",
+  "changelogDate": "20211002124941"
+}

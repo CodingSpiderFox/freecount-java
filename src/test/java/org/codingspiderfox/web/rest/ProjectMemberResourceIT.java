@@ -21,8 +21,6 @@ import org.codingspiderfox.IntegrationTest;
 import org.codingspiderfox.domain.Project;
 import org.codingspiderfox.domain.ProjectMember;
 import org.codingspiderfox.domain.User;
-import org.codingspiderfox.domain.enumeration.ProjectMemberRole;
-import org.codingspiderfox.domain.enumeration.ProjectPermission;
 import org.codingspiderfox.repository.ProjectMemberRepository;
 import org.codingspiderfox.repository.search.ProjectMemberSearchRepository;
 import org.codingspiderfox.service.criteria.ProjectMemberCriteria;
@@ -50,12 +48,6 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @WithMockUser
 class ProjectMemberResourceIT {
-
-    private static final ProjectPermission DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS = ProjectPermission.CLOSE_PROJECT;
-    private static final ProjectPermission UPDATED_ADDITIONAL_PROJECT_PERMISSIONS = ProjectPermission.CLOSE_BILL;
-
-    private static final ProjectMemberRole DEFAULT_ROLE_IN_PROJECT = ProjectMemberRole.PROJECT_ADMIN;
-    private static final ProjectMemberRole UPDATED_ROLE_IN_PROJECT = ProjectMemberRole.BILL_CONTRIBUTOR;
 
     private static final ZonedDateTime DEFAULT_ADDED_TIMESTAMP = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_ADDED_TIMESTAMP = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
@@ -97,10 +89,7 @@ class ProjectMemberResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static ProjectMember createEntity(EntityManager em) {
-        ProjectMember projectMember = new ProjectMember()
-            .additionalProjectPermissions(DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS)
-            .roleInProject(DEFAULT_ROLE_IN_PROJECT)
-            .addedTimestamp(DEFAULT_ADDED_TIMESTAMP);
+        ProjectMember projectMember = new ProjectMember().addedTimestamp(DEFAULT_ADDED_TIMESTAMP);
         // Add required entity
         Project project;
         if (TestUtil.findAll(em, Project.class).isEmpty()) {
@@ -121,10 +110,7 @@ class ProjectMemberResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static ProjectMember createUpdatedEntity(EntityManager em) {
-        ProjectMember projectMember = new ProjectMember()
-            .additionalProjectPermissions(UPDATED_ADDITIONAL_PROJECT_PERMISSIONS)
-            .roleInProject(UPDATED_ROLE_IN_PROJECT)
-            .addedTimestamp(UPDATED_ADDED_TIMESTAMP);
+        ProjectMember projectMember = new ProjectMember().addedTimestamp(UPDATED_ADDED_TIMESTAMP);
         // Add required entity
         Project project;
         if (TestUtil.findAll(em, Project.class).isEmpty()) {
@@ -162,8 +148,6 @@ class ProjectMemberResourceIT {
         List<ProjectMember> projectMemberList = projectMemberRepository.findAll();
         assertThat(projectMemberList).hasSize(databaseSizeBeforeCreate + 1);
         ProjectMember testProjectMember = projectMemberList.get(projectMemberList.size() - 1);
-        assertThat(testProjectMember.getAdditionalProjectPermissions()).isEqualTo(DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS);
-        assertThat(testProjectMember.getRoleInProject()).isEqualTo(DEFAULT_ROLE_IN_PROJECT);
         assertThat(testProjectMember.getAddedTimestamp()).isEqualTo(DEFAULT_ADDED_TIMESTAMP);
 
         // Validate the id for MapsId, the ids must be same
@@ -244,52 +228,6 @@ class ProjectMemberResourceIT {
 
     @Test
     @Transactional
-    void checkAdditionalProjectPermissionsIsRequired() throws Exception {
-        int databaseSizeBeforeTest = projectMemberRepository.findAll().size();
-        // set the field null
-        projectMember.setAdditionalProjectPermissions(null);
-
-        // Create the ProjectMember, which fails.
-        ProjectMemberDTO projectMemberDTO = projectMemberMapper.toDto(projectMember);
-
-        restProjectMemberMockMvc
-            .perform(
-                post(ENTITY_API_URL)
-                    .with(csrf())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(projectMemberDTO))
-            )
-            .andExpect(status().isBadRequest());
-
-        List<ProjectMember> projectMemberList = projectMemberRepository.findAll();
-        assertThat(projectMemberList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkRoleInProjectIsRequired() throws Exception {
-        int databaseSizeBeforeTest = projectMemberRepository.findAll().size();
-        // set the field null
-        projectMember.setRoleInProject(null);
-
-        // Create the ProjectMember, which fails.
-        ProjectMemberDTO projectMemberDTO = projectMemberMapper.toDto(projectMember);
-
-        restProjectMemberMockMvc
-            .perform(
-                post(ENTITY_API_URL)
-                    .with(csrf())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(projectMemberDTO))
-            )
-            .andExpect(status().isBadRequest());
-
-        List<ProjectMember> projectMemberList = projectMemberRepository.findAll();
-        assertThat(projectMemberList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     void checkAddedTimestampIsRequired() throws Exception {
         int databaseSizeBeforeTest = projectMemberRepository.findAll().size();
         // set the field null
@@ -323,8 +261,6 @@ class ProjectMemberResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(projectMember.getId().intValue())))
-            .andExpect(jsonPath("$.[*].additionalProjectPermissions").value(hasItem(DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS.toString())))
-            .andExpect(jsonPath("$.[*].roleInProject").value(hasItem(DEFAULT_ROLE_IN_PROJECT.toString())))
             .andExpect(jsonPath("$.[*].addedTimestamp").value(hasItem(sameInstant(DEFAULT_ADDED_TIMESTAMP))));
     }
 
@@ -340,8 +276,6 @@ class ProjectMemberResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(projectMember.getId().intValue()))
-            .andExpect(jsonPath("$.additionalProjectPermissions").value(DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS.toString()))
-            .andExpect(jsonPath("$.roleInProject").value(DEFAULT_ROLE_IN_PROJECT.toString()))
             .andExpect(jsonPath("$.addedTimestamp").value(sameInstant(DEFAULT_ADDED_TIMESTAMP)));
     }
 
@@ -361,112 +295,6 @@ class ProjectMemberResourceIT {
 
         defaultProjectMemberShouldBeFound("id.lessThanOrEqual=" + id);
         defaultProjectMemberShouldNotBeFound("id.lessThan=" + id);
-    }
-
-    @Test
-    @Transactional
-    void getAllProjectMembersByAdditionalProjectPermissionsIsEqualToSomething() throws Exception {
-        // Initialize the database
-        projectMemberRepository.saveAndFlush(projectMember);
-
-        // Get all the projectMemberList where additionalProjectPermissions equals to DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS
-        defaultProjectMemberShouldBeFound("additionalProjectPermissions.equals=" + DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS);
-
-        // Get all the projectMemberList where additionalProjectPermissions equals to UPDATED_ADDITIONAL_PROJECT_PERMISSIONS
-        defaultProjectMemberShouldNotBeFound("additionalProjectPermissions.equals=" + UPDATED_ADDITIONAL_PROJECT_PERMISSIONS);
-    }
-
-    @Test
-    @Transactional
-    void getAllProjectMembersByAdditionalProjectPermissionsIsNotEqualToSomething() throws Exception {
-        // Initialize the database
-        projectMemberRepository.saveAndFlush(projectMember);
-
-        // Get all the projectMemberList where additionalProjectPermissions not equals to DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS
-        defaultProjectMemberShouldNotBeFound("additionalProjectPermissions.notEquals=" + DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS);
-
-        // Get all the projectMemberList where additionalProjectPermissions not equals to UPDATED_ADDITIONAL_PROJECT_PERMISSIONS
-        defaultProjectMemberShouldBeFound("additionalProjectPermissions.notEquals=" + UPDATED_ADDITIONAL_PROJECT_PERMISSIONS);
-    }
-
-    @Test
-    @Transactional
-    void getAllProjectMembersByAdditionalProjectPermissionsIsInShouldWork() throws Exception {
-        // Initialize the database
-        projectMemberRepository.saveAndFlush(projectMember);
-
-        // Get all the projectMemberList where additionalProjectPermissions in DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS or UPDATED_ADDITIONAL_PROJECT_PERMISSIONS
-        defaultProjectMemberShouldBeFound(
-            "additionalProjectPermissions.in=" + DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS + "," + UPDATED_ADDITIONAL_PROJECT_PERMISSIONS
-        );
-
-        // Get all the projectMemberList where additionalProjectPermissions equals to UPDATED_ADDITIONAL_PROJECT_PERMISSIONS
-        defaultProjectMemberShouldNotBeFound("additionalProjectPermissions.in=" + UPDATED_ADDITIONAL_PROJECT_PERMISSIONS);
-    }
-
-    @Test
-    @Transactional
-    void getAllProjectMembersByAdditionalProjectPermissionsIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        projectMemberRepository.saveAndFlush(projectMember);
-
-        // Get all the projectMemberList where additionalProjectPermissions is not null
-        defaultProjectMemberShouldBeFound("additionalProjectPermissions.specified=true");
-
-        // Get all the projectMemberList where additionalProjectPermissions is null
-        defaultProjectMemberShouldNotBeFound("additionalProjectPermissions.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllProjectMembersByRoleInProjectIsEqualToSomething() throws Exception {
-        // Initialize the database
-        projectMemberRepository.saveAndFlush(projectMember);
-
-        // Get all the projectMemberList where roleInProject equals to DEFAULT_ROLE_IN_PROJECT
-        defaultProjectMemberShouldBeFound("roleInProject.equals=" + DEFAULT_ROLE_IN_PROJECT);
-
-        // Get all the projectMemberList where roleInProject equals to UPDATED_ROLE_IN_PROJECT
-        defaultProjectMemberShouldNotBeFound("roleInProject.equals=" + UPDATED_ROLE_IN_PROJECT);
-    }
-
-    @Test
-    @Transactional
-    void getAllProjectMembersByRoleInProjectIsNotEqualToSomething() throws Exception {
-        // Initialize the database
-        projectMemberRepository.saveAndFlush(projectMember);
-
-        // Get all the projectMemberList where roleInProject not equals to DEFAULT_ROLE_IN_PROJECT
-        defaultProjectMemberShouldNotBeFound("roleInProject.notEquals=" + DEFAULT_ROLE_IN_PROJECT);
-
-        // Get all the projectMemberList where roleInProject not equals to UPDATED_ROLE_IN_PROJECT
-        defaultProjectMemberShouldBeFound("roleInProject.notEquals=" + UPDATED_ROLE_IN_PROJECT);
-    }
-
-    @Test
-    @Transactional
-    void getAllProjectMembersByRoleInProjectIsInShouldWork() throws Exception {
-        // Initialize the database
-        projectMemberRepository.saveAndFlush(projectMember);
-
-        // Get all the projectMemberList where roleInProject in DEFAULT_ROLE_IN_PROJECT or UPDATED_ROLE_IN_PROJECT
-        defaultProjectMemberShouldBeFound("roleInProject.in=" + DEFAULT_ROLE_IN_PROJECT + "," + UPDATED_ROLE_IN_PROJECT);
-
-        // Get all the projectMemberList where roleInProject equals to UPDATED_ROLE_IN_PROJECT
-        defaultProjectMemberShouldNotBeFound("roleInProject.in=" + UPDATED_ROLE_IN_PROJECT);
-    }
-
-    @Test
-    @Transactional
-    void getAllProjectMembersByRoleInProjectIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        projectMemberRepository.saveAndFlush(projectMember);
-
-        // Get all the projectMemberList where roleInProject is not null
-        defaultProjectMemberShouldBeFound("roleInProject.specified=true");
-
-        // Get all the projectMemberList where roleInProject is null
-        defaultProjectMemberShouldNotBeFound("roleInProject.specified=false");
     }
 
     @Test
@@ -623,8 +451,6 @@ class ProjectMemberResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(projectMember.getId().intValue())))
-            .andExpect(jsonPath("$.[*].additionalProjectPermissions").value(hasItem(DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS.toString())))
-            .andExpect(jsonPath("$.[*].roleInProject").value(hasItem(DEFAULT_ROLE_IN_PROJECT.toString())))
             .andExpect(jsonPath("$.[*].addedTimestamp").value(hasItem(sameInstant(DEFAULT_ADDED_TIMESTAMP))));
 
         // Check, that the count call also returns 1
@@ -673,10 +499,7 @@ class ProjectMemberResourceIT {
         ProjectMember updatedProjectMember = projectMemberRepository.findById(projectMember.getId()).get();
         // Disconnect from session so that the updates on updatedProjectMember are not directly saved in db
         em.detach(updatedProjectMember);
-        updatedProjectMember
-            .additionalProjectPermissions(UPDATED_ADDITIONAL_PROJECT_PERMISSIONS)
-            .roleInProject(UPDATED_ROLE_IN_PROJECT)
-            .addedTimestamp(UPDATED_ADDED_TIMESTAMP);
+        updatedProjectMember.addedTimestamp(UPDATED_ADDED_TIMESTAMP);
         ProjectMemberDTO projectMemberDTO = projectMemberMapper.toDto(updatedProjectMember);
 
         restProjectMemberMockMvc
@@ -692,8 +515,6 @@ class ProjectMemberResourceIT {
         List<ProjectMember> projectMemberList = projectMemberRepository.findAll();
         assertThat(projectMemberList).hasSize(databaseSizeBeforeUpdate);
         ProjectMember testProjectMember = projectMemberList.get(projectMemberList.size() - 1);
-        assertThat(testProjectMember.getAdditionalProjectPermissions()).isEqualTo(UPDATED_ADDITIONAL_PROJECT_PERMISSIONS);
-        assertThat(testProjectMember.getRoleInProject()).isEqualTo(UPDATED_ROLE_IN_PROJECT);
         assertThat(testProjectMember.getAddedTimestamp()).isEqualTo(UPDATED_ADDED_TIMESTAMP);
 
         // Validate the ProjectMember in Elasticsearch
@@ -793,8 +614,6 @@ class ProjectMemberResourceIT {
         ProjectMember partialUpdatedProjectMember = new ProjectMember();
         partialUpdatedProjectMember.setId(projectMember.getId());
 
-        partialUpdatedProjectMember.roleInProject(UPDATED_ROLE_IN_PROJECT);
-
         restProjectMemberMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedProjectMember.getId())
@@ -808,8 +627,6 @@ class ProjectMemberResourceIT {
         List<ProjectMember> projectMemberList = projectMemberRepository.findAll();
         assertThat(projectMemberList).hasSize(databaseSizeBeforeUpdate);
         ProjectMember testProjectMember = projectMemberList.get(projectMemberList.size() - 1);
-        assertThat(testProjectMember.getAdditionalProjectPermissions()).isEqualTo(DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS);
-        assertThat(testProjectMember.getRoleInProject()).isEqualTo(UPDATED_ROLE_IN_PROJECT);
         assertThat(testProjectMember.getAddedTimestamp()).isEqualTo(DEFAULT_ADDED_TIMESTAMP);
     }
 
@@ -825,10 +642,7 @@ class ProjectMemberResourceIT {
         ProjectMember partialUpdatedProjectMember = new ProjectMember();
         partialUpdatedProjectMember.setId(projectMember.getId());
 
-        partialUpdatedProjectMember
-            .additionalProjectPermissions(UPDATED_ADDITIONAL_PROJECT_PERMISSIONS)
-            .roleInProject(UPDATED_ROLE_IN_PROJECT)
-            .addedTimestamp(UPDATED_ADDED_TIMESTAMP);
+        partialUpdatedProjectMember.addedTimestamp(UPDATED_ADDED_TIMESTAMP);
 
         restProjectMemberMockMvc
             .perform(
@@ -843,8 +657,6 @@ class ProjectMemberResourceIT {
         List<ProjectMember> projectMemberList = projectMemberRepository.findAll();
         assertThat(projectMemberList).hasSize(databaseSizeBeforeUpdate);
         ProjectMember testProjectMember = projectMemberList.get(projectMemberList.size() - 1);
-        assertThat(testProjectMember.getAdditionalProjectPermissions()).isEqualTo(UPDATED_ADDITIONAL_PROJECT_PERMISSIONS);
-        assertThat(testProjectMember.getRoleInProject()).isEqualTo(UPDATED_ROLE_IN_PROJECT);
         assertThat(testProjectMember.getAddedTimestamp()).isEqualTo(UPDATED_ADDED_TIMESTAMP);
     }
 
@@ -965,8 +777,6 @@ class ProjectMemberResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(projectMember.getId().intValue())))
-            .andExpect(jsonPath("$.[*].additionalProjectPermissions").value(hasItem(DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS.toString())))
-            .andExpect(jsonPath("$.[*].roleInProject").value(hasItem(DEFAULT_ROLE_IN_PROJECT.toString())))
             .andExpect(jsonPath("$.[*].addedTimestamp").value(hasItem(sameInstant(DEFAULT_ADDED_TIMESTAMP))));
     }
 }

@@ -1,0 +1,38 @@
+{
+  "fields": [
+    {
+      "fieldName": "assignmentTimestamp",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipName": "projectMember",
+      "otherEntityName": "projectMember",
+      "relationshipType": "one-to-one",
+      "relationshipValidateRules": ["required"],
+      "otherEntityField": "id",
+      "ownerSide": true,
+      "id": true,
+      "otherEntityRelationshipName": "projectMemberPermissionAssignment"
+    },
+    {
+      "relationshipName": "projectMemberPermission",
+      "otherEntityName": "projectMemberPermission",
+      "relationshipType": "many-to-many",
+      "relationshipValidateRules": ["required"],
+      "otherEntityField": "id",
+      "ownerSide": true,
+      "otherEntityRelationshipName": "projectMemberPermissionAssignment"
+    }
+  ],
+  "service": "serviceImpl",
+  "dto": "mapstruct",
+  "jpaMetamodelFiltering": true,
+  "readOnly": false,
+  "pagination": "infinite-scroll",
+  "entityTableName": "proj_member_permiss_assign",
+  "name": "ProjectMemberPermissionAssignment",
+  "changelogDate": "20211002125554"
+}

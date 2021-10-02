@@ -16,6 +16,10 @@
         "stock": "Stock",
         "financeAccount": "Finance Account",
         "financeTransactions": "Finance Transactions",
+        "projectMemberRole": "Project Member Role",
+        "projectMemberPermission": "Project Member Permission",
+        "projectMemberRoleAssignment": "Project Member Role Assignment",
+        "projectMemberPermissionAssignment": "Project Member Permission Assignment",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

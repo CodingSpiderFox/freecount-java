@@ -1,0 +1,26 @@
+{
+  "freecountApp": {
+    "projectMemberPermission": {
+      "home": {
+        "title": "Project Member Permissions",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Project Member Permission erstellen",
+        "createOrEditLabel": "Project Member Permission erstellen oder bearbeiten",
+        "search": "Suche nach Project Member Permission",
+        "notFound": "Keine Project Member Permissions gefunden"
+      },
+      "created": "Project Member Permission erstellt mit ID {{ param }}",
+      "updated": "Project Member Permission aktualisiert mit ID {{ param }}",
+      "deleted": "Project Member Permission gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Project Member Permission {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Project Member Permission"
+      },
+      "id": "ID",
+      "createdTimestamp": "Created Timestamp",
+      "projectMemberPermission": "Project Member Permission"
+    }
+  }
+}

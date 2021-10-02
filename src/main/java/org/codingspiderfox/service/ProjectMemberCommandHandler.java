@@ -2,15 +2,10 @@ package org.codingspiderfox.service;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.codingspiderfox.domain.Bill;
-import org.codingspiderfox.domain.BillPosition;
 import org.codingspiderfox.domain.Project;
 import org.codingspiderfox.domain.ProjectMember;
 import org.codingspiderfox.domain.User;
-import org.codingspiderfox.domain.enumeration.ProjectMemberRole;
-import org.codingspiderfox.domain.enumeration.ProjectPermission;
-import org.codingspiderfox.repository.BillPositionRepository;
-import org.codingspiderfox.repository.BillRepository;
+import org.codingspiderfox.domain.enumeration.ProjectMemberRoleEnum;
 import org.codingspiderfox.repository.ProjectMemberRepository;
 import org.codingspiderfox.repository.ProjectRepository;
 import org.codingspiderfox.security.SecurityUtils;
@@ -22,9 +17,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -58,7 +51,7 @@ public class ProjectMemberCommandHandler {
         ProjectMember creatorAsAdminMemberOfProject = new ProjectMember();
         creatorAsAdminMemberOfProject.setProject(project);
         creatorAsAdminMemberOfProject.setUser(newAdmin);
-        creatorAsAdminMemberOfProject.setRoleInProject(Arrays.asList(ProjectMemberRole.PROJECT_ADMIN));
+        creatorAsAdminMemberOfProject.setRoleInProject(Arrays.asList(ProjectMemberRoleEnum.PROJECT_ADMIN));
         creatorAsAdminMemberOfProject.setAddedTimestamp(ZonedDateTime.now());
         creatorAsAdminMemberOfProject = projectMemberRepository.save(creatorAsAdminMemberOfProject);
 
@@ -86,7 +79,7 @@ public class ProjectMemberCommandHandler {
             ProjectMember newMember = new ProjectMember();
             newMember.setProject(project);
             newMember.setAddedTimestamp(ZonedDateTime.now());
-            newMember.setRoleInProject(Arrays.asList(ProjectMemberRole.BILL_CONTRIBUTOR));
+            newMember.setRoleInProject(Arrays.asList(ProjectMemberRoleEnum.BILL_CONTRIBUTOR));
             newMember.setAdditionalProjectPermissions(Collections.emptyList());
             try {
                 newMember.setUser(usersForMemberIds.get().stream().filter(user -> user.getId().equals(userId)).findFirst().get());

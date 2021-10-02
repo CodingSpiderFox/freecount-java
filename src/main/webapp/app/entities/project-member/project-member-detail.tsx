@@ -30,18 +30,6 @@ export const ProjectMemberDetail = (props: RouteComponentProps<{ id: string }>) 
           </dt>
           <dd>{projectMemberEntity.id}</dd>
           <dt>
-            <span id="additionalProjectPermissions">
-              <Translate contentKey="freecountApp.projectMember.additionalProjectPermissions">Additional Project Permissions</Translate>
-            </span>
-          </dt>
-          <dd>{projectMemberEntity.additionalProjectPermissions}</dd>
-          <dt>
-            <span id="roleInProject">
-              <Translate contentKey="freecountApp.projectMember.roleInProject">Role In Project</Translate>
-            </span>
-          </dt>
-          <dd>{projectMemberEntity.roleInProject}</dd>
-          <dt>
             <span id="addedTimestamp">
               <Translate contentKey="freecountApp.projectMember.addedTimestamp">Added Timestamp</Translate>
             </span>

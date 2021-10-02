@@ -1,0 +1,27 @@
+{
+  "freecountApp": {
+    "projectMemberRoleAssignment": {
+      "home": {
+        "title": "Project Member Role Assignments",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Project Member Role Assignment erstellen",
+        "createOrEditLabel": "Project Member Role Assignment erstellen oder bearbeiten",
+        "search": "Suche nach Project Member Role Assignment",
+        "notFound": "Keine Project Member Role Assignments gefunden"
+      },
+      "created": "Project Member Role Assignment erstellt mit ID {{ param }}",
+      "updated": "Project Member Role Assignment aktualisiert mit ID {{ param }}",
+      "deleted": "Project Member Role Assignment gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Project Member Role Assignment {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Project Member Role Assignment"
+      },
+      "id": "ID",
+      "assignmentTimestamp": "Assignment Timestamp",
+      "projectMember": "Project Member",
+      "projectMemberRole": "Project Member Role"
+    }
+  }
+}

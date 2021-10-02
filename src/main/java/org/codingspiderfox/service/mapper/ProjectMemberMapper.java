@@ -12,4 +12,10 @@ public interface ProjectMemberMapper extends EntityMapper<ProjectMemberDTO, Proj
     @Mapping(target = "user", source = "user", qualifiedByName = "login")
     @Mapping(target = "project", source = "project", qualifiedByName = "id")
     ProjectMemberDTO toDto(ProjectMember s);
+
+    @Named("id")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "project", source = "project")
+    ProjectMemberDTO toDtoId(ProjectMember projectMember);
 }

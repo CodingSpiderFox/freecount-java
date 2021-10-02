@@ -57,6 +57,12 @@ public class CacheConfiguration {
             createCache(cm, org.codingspiderfox.domain.Stock.class.getName());
             createCache(cm, org.codingspiderfox.domain.FinanceAccount.class.getName());
             createCache(cm, org.codingspiderfox.domain.FinanceTransactions.class.getName());
+            createCache(cm, org.codingspiderfox.domain.ProjectMemberRole.class.getName());
+            createCache(cm, org.codingspiderfox.domain.ProjectMemberPermission.class.getName());
+            createCache(cm, org.codingspiderfox.domain.ProjectMemberRoleAssignment.class.getName());
+            createCache(cm, org.codingspiderfox.domain.ProjectMemberRoleAssignment.class.getName() + ".projectMemberRoles");
+            createCache(cm, org.codingspiderfox.domain.ProjectMemberPermissionAssignment.class.getName());
+            createCache(cm, org.codingspiderfox.domain.ProjectMemberPermissionAssignment.class.getName() + ".projectMemberPermissions");
             // jhipster-needle-ehcache-add-entry
         };
     }

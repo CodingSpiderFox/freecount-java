@@ -19,8 +19,6 @@
         "title": "Project Member"
       },
       "id": "ID",
-      "additionalProjectPermissions": "Additional Project Permissions",
-      "roleInProject": "Role In Project",
       "addedTimestamp": "Added Timestamp",
       "user": "User",
       "project": "Project"

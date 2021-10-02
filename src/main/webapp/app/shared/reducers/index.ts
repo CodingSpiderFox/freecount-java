@@ -24,6 +24,14 @@ import stock from 'app/entities/stock/stock.reducer';
 import financeAccount from 'app/entities/finance-account/finance-account.reducer';
 // prettier-ignore
 import financeTransactions from 'app/entities/finance-transactions/finance-transactions.reducer';
+// prettier-ignore
+import projectMemberRole from 'app/entities/project-member-role/project-member-role.reducer';
+// prettier-ignore
+import projectMemberPermission from 'app/entities/project-member-permission/project-member-permission.reducer';
+// prettier-ignore
+import projectMemberRoleAssignment from 'app/entities/project-member-role-assignment/project-member-role-assignment.reducer';
+// prettier-ignore
+import projectMemberPermissionAssignment from 'app/entities/project-member-permission-assignment/project-member-permission-assignment.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 const rootReducer = {
@@ -41,6 +49,10 @@ const rootReducer = {
   stock,
   financeAccount,
   financeTransactions,
+  projectMemberRole,
+  projectMemberPermission,
+  projectMemberRoleAssignment,
+  projectMemberPermissionAssignment,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar,
 };

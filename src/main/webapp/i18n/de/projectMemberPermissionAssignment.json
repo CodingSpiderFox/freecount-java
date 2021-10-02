@@ -1,0 +1,27 @@
+{
+  "freecountApp": {
+    "projectMemberPermissionAssignment": {
+      "home": {
+        "title": "Project Member Permission Assignments",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Project Member Permission Assignment erstellen",
+        "createOrEditLabel": "Project Member Permission Assignment erstellen oder bearbeiten",
+        "search": "Suche nach Project Member Permission Assignment",
+        "notFound": "Keine Project Member Permission Assignments gefunden"
+      },
+      "created": "Project Member Permission Assignment erstellt mit ID {{ param }}",
+      "updated": "Project Member Permission Assignment aktualisiert mit ID {{ param }}",
+      "deleted": "Project Member Permission Assignment gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Project Member Permission Assignment {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Project Member Permission Assignment"
+      },
+      "id": "ID",
+      "assignmentTimestamp": "Assignment Timestamp",
+      "projectMember": "Project Member",
+      "projectMemberPermission": "Project Member Permission"
+    }
+  }
+}
