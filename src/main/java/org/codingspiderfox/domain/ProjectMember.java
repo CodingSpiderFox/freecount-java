@@ -1,8 +1,10 @@
 package org.codingspiderfox.domain;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import org.codingspiderfox.domain.enumeration.ProjectMemberRole;
 import org.codingspiderfox.domain.enumeration.ProjectPermission;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -26,6 +28,15 @@ public class ProjectMember implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "additional_project_permissions", nullable = false)
     private ProjectPermission additionalProjectPermissions;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role_in_project", nullable = false)
+    private ProjectMemberRole roleInProject;
+
+    @NotNull
+    @Column(name = "added_timestamp", nullable = false)
+    private ZonedDateTime addedTimestamp;
 
     @ManyToOne
     private User user;
@@ -62,6 +73,32 @@ public class ProjectMember implements Serializable {
 
     public void setAdditionalProjectPermissions(ProjectPermission additionalProjectPermissions) {
         this.additionalProjectPermissions = additionalProjectPermissions;
+    }
+
+    public ProjectMemberRole getRoleInProject() {
+        return this.roleInProject;
+    }
+
+    public ProjectMember roleInProject(ProjectMemberRole roleInProject) {
+        this.setRoleInProject(roleInProject);
+        return this;
+    }
+
+    public void setRoleInProject(ProjectMemberRole roleInProject) {
+        this.roleInProject = roleInProject;
+    }
+
+    public ZonedDateTime getAddedTimestamp() {
+        return this.addedTimestamp;
+    }
+
+    public ProjectMember addedTimestamp(ZonedDateTime addedTimestamp) {
+        this.setAddedTimestamp(addedTimestamp);
+        return this;
+    }
+
+    public void setAddedTimestamp(ZonedDateTime addedTimestamp) {
+        this.addedTimestamp = addedTimestamp;
     }
 
     public User getUser() {
@@ -115,6 +152,8 @@ public class ProjectMember implements Serializable {
         return "ProjectMember{" +
             "id=" + getId() +
             ", additionalProjectPermissions='" + getAdditionalProjectPermissions() + "'" +
+            ", roleInProject='" + getRoleInProject() + "'" +
+            ", addedTimestamp='" + getAddedTimestamp() + "'" +
             "}";
     }
 }

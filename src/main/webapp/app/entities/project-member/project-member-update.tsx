@@ -46,6 +46,8 @@ export const ProjectMemberUpdate = (props: RouteComponentProps<{ id: string }>) 
   }, [updateSuccess]);
 
   const saveEntity = values => {
+    values.addedTimestamp = convertDateTimeToServer(values.addedTimestamp);
+
     const entity = {
       ...projectMemberEntity,
       ...values,
@@ -62,10 +64,14 @@ export const ProjectMemberUpdate = (props: RouteComponentProps<{ id: string }>) 
 
   const defaultValues = () =>
     isNew
-      ? {}
+      ? {
+          addedTimestamp: displayDefaultDateTime(),
+        }
       : {
           additionalProjectPermissions: 'CLOSE_PROJECT',
+          roleInProject: 'PROJECT_ADMIN',
           ...projectMemberEntity,
+          addedTimestamp: convertDateTimeFromServer(projectMemberEntity.addedTimestamp),
           userId: projectMemberEntity?.user?.id,
           projectId: projectMemberEntity?.project?.id,
         };
@@ -106,6 +112,27 @@ export const ProjectMemberUpdate = (props: RouteComponentProps<{ id: string }>) 
                 <option value="CLOSE_BILL">{translate('freecountApp.ProjectPermission.CLOSE_BILL')}</option>
                 <option value="ADD_MEMBER">{translate('freecountApp.ProjectPermission.ADD_MEMBER')}</option>
               </ValidatedField>
+              <ValidatedField
+                label={translate('freecountApp.projectMember.roleInProject')}
+                id="project-member-roleInProject"
+                name="roleInProject"
+                data-cy="roleInProject"
+                type="select"
+              >
+                <option value="PROJECT_ADMIN">{translate('freecountApp.ProjectMemberRole.PROJECT_ADMIN')}</option>
+                <option value="BILL_CONTRIBUTOR">{translate('freecountApp.ProjectMemberRole.BILL_CONTRIBUTOR')}</option>
+              </ValidatedField>
+              <ValidatedField
+                label={translate('freecountApp.projectMember.addedTimestamp')}
+                id="project-member-addedTimestamp"
+                name="addedTimestamp"
+                data-cy="addedTimestamp"
+                type="datetime-local"
+                placeholder="YYYY-MM-DD HH:mm"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                }}
+              />
               <ValidatedField
                 id="project-member-user"
                 name="userId"

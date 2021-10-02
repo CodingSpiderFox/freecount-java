@@ -2,6 +2,7 @@ package org.codingspiderfox.service.criteria;
 
 import java.io.Serializable;
 import java.util.Objects;
+import org.codingspiderfox.domain.enumeration.ProjectMemberRole;
 import org.codingspiderfox.domain.enumeration.ProjectPermission;
 import tech.jhipster.service.Criteria;
 import tech.jhipster.service.filter.BooleanFilter;
@@ -11,6 +12,7 @@ import tech.jhipster.service.filter.FloatFilter;
 import tech.jhipster.service.filter.IntegerFilter;
 import tech.jhipster.service.filter.LongFilter;
 import tech.jhipster.service.filter.StringFilter;
+import tech.jhipster.service.filter.ZonedDateTimeFilter;
 
 /**
  * Criteria class for the {@link org.codingspiderfox.domain.ProjectMember} entity. This class is used
@@ -40,11 +42,32 @@ public class ProjectMemberCriteria implements Serializable, Criteria {
         }
     }
 
+    /**
+     * Class for filtering ProjectMemberRole
+     */
+    public static class ProjectMemberRoleFilter extends Filter<ProjectMemberRole> {
+
+        public ProjectMemberRoleFilter() {}
+
+        public ProjectMemberRoleFilter(ProjectMemberRoleFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public ProjectMemberRoleFilter copy() {
+            return new ProjectMemberRoleFilter(this);
+        }
+    }
+
     private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
     private ProjectPermissionFilter additionalProjectPermissions;
+
+    private ProjectMemberRoleFilter roleInProject;
+
+    private ZonedDateTimeFilter addedTimestamp;
 
     private StringFilter userId;
 
@@ -57,6 +80,8 @@ public class ProjectMemberCriteria implements Serializable, Criteria {
     public ProjectMemberCriteria(ProjectMemberCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
         this.additionalProjectPermissions = other.additionalProjectPermissions == null ? null : other.additionalProjectPermissions.copy();
+        this.roleInProject = other.roleInProject == null ? null : other.roleInProject.copy();
+        this.addedTimestamp = other.addedTimestamp == null ? null : other.addedTimestamp.copy();
         this.userId = other.userId == null ? null : other.userId.copy();
         this.projectId = other.projectId == null ? null : other.projectId.copy();
         this.distinct = other.distinct;
@@ -95,6 +120,36 @@ public class ProjectMemberCriteria implements Serializable, Criteria {
 
     public void setAdditionalProjectPermissions(ProjectPermissionFilter additionalProjectPermissions) {
         this.additionalProjectPermissions = additionalProjectPermissions;
+    }
+
+    public ProjectMemberRoleFilter getRoleInProject() {
+        return roleInProject;
+    }
+
+    public ProjectMemberRoleFilter roleInProject() {
+        if (roleInProject == null) {
+            roleInProject = new ProjectMemberRoleFilter();
+        }
+        return roleInProject;
+    }
+
+    public void setRoleInProject(ProjectMemberRoleFilter roleInProject) {
+        this.roleInProject = roleInProject;
+    }
+
+    public ZonedDateTimeFilter getAddedTimestamp() {
+        return addedTimestamp;
+    }
+
+    public ZonedDateTimeFilter addedTimestamp() {
+        if (addedTimestamp == null) {
+            addedTimestamp = new ZonedDateTimeFilter();
+        }
+        return addedTimestamp;
+    }
+
+    public void setAddedTimestamp(ZonedDateTimeFilter addedTimestamp) {
+        this.addedTimestamp = addedTimestamp;
     }
 
     public StringFilter getUserId() {
@@ -147,6 +202,8 @@ public class ProjectMemberCriteria implements Serializable, Criteria {
         return (
             Objects.equals(id, that.id) &&
             Objects.equals(additionalProjectPermissions, that.additionalProjectPermissions) &&
+            Objects.equals(roleInProject, that.roleInProject) &&
+            Objects.equals(addedTimestamp, that.addedTimestamp) &&
             Objects.equals(userId, that.userId) &&
             Objects.equals(projectId, that.projectId) &&
             Objects.equals(distinct, that.distinct)
@@ -155,7 +212,7 @@ public class ProjectMemberCriteria implements Serializable, Criteria {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, additionalProjectPermissions, userId, projectId, distinct);
+        return Objects.hash(id, additionalProjectPermissions, roleInProject, addedTimestamp, userId, projectId, distinct);
     }
 
     // prettier-ignore
@@ -164,6 +221,8 @@ public class ProjectMemberCriteria implements Serializable, Criteria {
         return "ProjectMemberCriteria{" +
             (id != null ? "id=" + id + ", " : "") +
             (additionalProjectPermissions != null ? "additionalProjectPermissions=" + additionalProjectPermissions + ", " : "") +
+            (roleInProject != null ? "roleInProject=" + roleInProject + ", " : "") +
+            (addedTimestamp != null ? "addedTimestamp=" + addedTimestamp + ", " : "") +
             (userId != null ? "userId=" + userId + ", " : "") +
             (projectId != null ? "projectId=" + projectId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +

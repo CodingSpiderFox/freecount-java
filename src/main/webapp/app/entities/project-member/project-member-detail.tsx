@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
-import { Translate } from 'react-jhipster';
+import { Translate, TextFormat } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntity } from './project-member.reducer';
@@ -35,6 +35,22 @@ export const ProjectMemberDetail = (props: RouteComponentProps<{ id: string }>) 
             </span>
           </dt>
           <dd>{projectMemberEntity.additionalProjectPermissions}</dd>
+          <dt>
+            <span id="roleInProject">
+              <Translate contentKey="freecountApp.projectMember.roleInProject">Role In Project</Translate>
+            </span>
+          </dt>
+          <dd>{projectMemberEntity.roleInProject}</dd>
+          <dt>
+            <span id="addedTimestamp">
+              <Translate contentKey="freecountApp.projectMember.addedTimestamp">Added Timestamp</Translate>
+            </span>
+          </dt>
+          <dd>
+            {projectMemberEntity.addedTimestamp ? (
+              <TextFormat value={projectMemberEntity.addedTimestamp} type="date" format={APP_DATE_FORMAT} />
+            ) : null}
+          </dd>
           <dt>
             <Translate contentKey="freecountApp.projectMember.user">User</Translate>
           </dt>

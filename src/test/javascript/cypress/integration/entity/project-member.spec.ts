@@ -105,6 +105,10 @@ describe('ProjectMember e2e test', () => {
 
     cy.get(`[data-cy="additionalProjectPermissions"]`).select('ADD_MEMBER');
 
+    cy.get(`[data-cy="roleInProject"]`).select('BILL_CONTRIBUTOR');
+
+    cy.get(`[data-cy="addedTimestamp"]`).type('2021-10-01T09:04').should('have.value', '2021-10-01T09:04');
+
     cy.setFieldSelectToLastOfEntity('user');
 
     cy.setFieldSelectToLastOfEntity('project');

@@ -104,6 +104,12 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
                         buildSpecification(criteria.getAdditionalProjectPermissions(), ProjectMember_.additionalProjectPermissions)
                     );
             }
+            if (criteria.getRoleInProject() != null) {
+                specification = specification.and(buildSpecification(criteria.getRoleInProject(), ProjectMember_.roleInProject));
+            }
+            if (criteria.getAddedTimestamp() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getAddedTimestamp(), ProjectMember_.addedTimestamp));
+            }
             if (criteria.getUserId() != null) {
                 specification =
                     specification.and(

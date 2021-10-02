@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Input, InputGroup, FormGroup, Form, Col, Row, Table } from 'reactstrap';
-import { Translate, translate, getSortState } from 'react-jhipster';
+import { Translate, translate, TextFormat, getSortState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { searchEntities, getEntities, reset } from './project-member.reducer';
@@ -197,6 +197,14 @@ export const ProjectMember = (props: RouteComponentProps<{ url: string }>) => {
                     </Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
                   </th>
+                  <th className="hand" onClick={sort('roleInProject')}>
+                    <Translate contentKey="freecountApp.projectMember.roleInProject">Role In Project</Translate>{' '}
+                    <FontAwesomeIcon icon="sort" />
+                  </th>
+                  <th className="hand" onClick={sort('addedTimestamp')}>
+                    <Translate contentKey="freecountApp.projectMember.addedTimestamp">Added Timestamp</Translate>{' '}
+                    <FontAwesomeIcon icon="sort" />
+                  </th>
                   <th>
                     <Translate contentKey="freecountApp.projectMember.user">User</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -216,6 +224,14 @@ export const ProjectMember = (props: RouteComponentProps<{ url: string }>) => {
                     </td>
                     <td>
                       <Translate contentKey={`freecountApp.ProjectPermission.${projectMember.additionalProjectPermissions}`} />
+                    </td>
+                    <td>
+                      <Translate contentKey={`freecountApp.ProjectMemberRole.${projectMember.roleInProject}`} />
+                    </td>
+                    <td>
+                      {projectMember.addedTimestamp ? (
+                        <TextFormat type="date" value={projectMember.addedTimestamp} format={APP_DATE_FORMAT} />
+                      ) : null}
                     </td>
                     <td>{projectMember.user ? projectMember.user.login : ''}</td>
                     <td>

@@ -5,6 +5,17 @@
       "fieldType": "ProjectPermission",
       "fieldValues": "CLOSE_PROJECT,CLOSE_BILL,ADD_MEMBER",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "roleInProject",
+      "fieldType": "ProjectMemberRole",
+      "fieldValues": "PROJECT_ADMIN,BILL_CONTRIBUTOR",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "addedTimestamp",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
     }
   ],
   "relationships": [

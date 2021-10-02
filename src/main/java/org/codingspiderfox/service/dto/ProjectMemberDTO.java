@@ -1,8 +1,10 @@
 package org.codingspiderfox.service.dto;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import javax.validation.constraints.*;
+import org.codingspiderfox.domain.enumeration.ProjectMemberRole;
 import org.codingspiderfox.domain.enumeration.ProjectPermission;
 
 /**
@@ -14,6 +16,12 @@ public class ProjectMemberDTO implements Serializable {
 
     @NotNull
     private ProjectPermission additionalProjectPermissions;
+
+    @NotNull
+    private ProjectMemberRole roleInProject;
+
+    @NotNull
+    private ZonedDateTime addedTimestamp;
 
     private UserDTO user;
 
@@ -33,6 +41,22 @@ public class ProjectMemberDTO implements Serializable {
 
     public void setAdditionalProjectPermissions(ProjectPermission additionalProjectPermissions) {
         this.additionalProjectPermissions = additionalProjectPermissions;
+    }
+
+    public ProjectMemberRole getRoleInProject() {
+        return roleInProject;
+    }
+
+    public void setRoleInProject(ProjectMemberRole roleInProject) {
+        this.roleInProject = roleInProject;
+    }
+
+    public ZonedDateTime getAddedTimestamp() {
+        return addedTimestamp;
+    }
+
+    public void setAddedTimestamp(ZonedDateTime addedTimestamp) {
+        this.addedTimestamp = addedTimestamp;
     }
 
     public UserDTO getUser() {
@@ -78,6 +102,8 @@ public class ProjectMemberDTO implements Serializable {
         return "ProjectMemberDTO{" +
             "id=" + getId() +
             ", additionalProjectPermissions='" + getAdditionalProjectPermissions() + "'" +
+            ", roleInProject='" + getRoleInProject() + "'" +
+            ", addedTimestamp='" + getAddedTimestamp() + "'" +
             ", user=" + getUser() +
             ", project=" + getProject() +
             "}";
