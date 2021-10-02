@@ -1,5 +1,8 @@
 package org.codingspiderfox.service;
 
+import com.carrotsearch.hppc.ByteContainer;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.criteria.JoinType;
 import org.codingspiderfox.domain.*; // for static metamodels
@@ -48,6 +51,7 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
 
     /**
      * Return a {@link List} of {@link ProjectMemberDTO} which matches the criteria from the database.
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
@@ -60,8 +64,9 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
 
     /**
      * Return a {@link Page} of {@link ProjectMemberDTO} which matches the criteria from the database.
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
-     * @param page The page, which should be returned.
+     * @param page     The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
@@ -73,6 +78,7 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
 
     /**
      * Return the number of matching entities in the database.
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the number of matching entities.
      */
@@ -85,6 +91,7 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
 
     /**
      * Function to convert {@link ProjectMemberCriteria} to a {@link Specification}
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching {@link Specification} of the entity.
      */
@@ -118,5 +125,9 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
             }
         }
         return specification;
+    }
+
+    public List<ProjectMember> findByAdminUserLoginAndProject(String currentUserLogin, Long projectId) {
+        return Collections.emptyList();
     }
 }

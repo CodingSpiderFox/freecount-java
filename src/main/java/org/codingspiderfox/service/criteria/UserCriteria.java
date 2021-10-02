@@ -1,13 +1,12 @@
 package org.codingspiderfox.service.criteria;
 
+import java.io.Serializable;
+import java.util.Objects;
 import tech.jhipster.service.Criteria;
 import tech.jhipster.service.filter.Filter;
 import tech.jhipster.service.filter.LongFilter;
 import tech.jhipster.service.filter.StringFilter;
 import tech.jhipster.service.filter.ZonedDateTimeFilter;
-
-import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * Criteria class for the {@link org.codingspiderfox.domain.User} entity. This class is used
@@ -22,12 +21,11 @@ public class UserCriteria implements Serializable, Criteria {
 
     private static final long serialVersionUID = 1L;
 
-    private LongFilter id;
+    private StringFilter id;
 
     private Boolean distinct;
 
-    public UserCriteria() {
-    }
+    public UserCriteria() {}
 
     public UserCriteria(UserCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
@@ -39,18 +37,18 @@ public class UserCriteria implements Serializable, Criteria {
         return new UserCriteria(this);
     }
 
-    public LongFilter getId() {
+    public StringFilter getId() {
         return id;
     }
 
-    public LongFilter id() {
+    public StringFilter id() {
         if (id == null) {
-            id = new LongFilter();
+            id = new StringFilter();
         }
         return id;
     }
 
-    public void setId(LongFilter id) {
+    public void setId(StringFilter id) {
         this.id = id;
     }
 
@@ -71,10 +69,7 @@ public class UserCriteria implements Serializable, Criteria {
             return false;
         }
         final UserCriteria that = (UserCriteria) o;
-        return (
-            Objects.equals(id, that.id) &&
-                Objects.equals(distinct, that.distinct)
-        );
+        return (Objects.equals(id, that.id) && Objects.equals(distinct, that.distinct));
     }
 
     @Override

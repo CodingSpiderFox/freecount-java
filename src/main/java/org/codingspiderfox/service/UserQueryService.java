@@ -1,7 +1,11 @@
 package org.codingspiderfox.service;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.codingspiderfox.domain.Project;
 import org.codingspiderfox.domain.User;
+import org.codingspiderfox.domain.User_;
 import org.codingspiderfox.repository.ProjectRepository;
 import org.codingspiderfox.repository.UserRepository;
 import org.codingspiderfox.repository.search.ProjectSearchRepository;
@@ -21,10 +25,6 @@ import tech.jhipster.service.filter.LongFilter;
 import tech.jhipster.service.filter.RangeFilter;
 import tech.jhipster.service.filter.StringFilter;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 /**
  * Service for executing complex queries for {@link Project} entities in the database.
  * The main input is a {@link ProjectCriteria} which gets converted to {@link Specification},
@@ -39,10 +39,7 @@ public class UserQueryService extends QueryService<User> {
 
     private final UserRepository userRepository;
 
-    public UserQueryService(
-        UserRepository userRepository
-
-    ) {
+    public UserQueryService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -51,10 +48,9 @@ public class UserQueryService extends QueryService<User> {
         log.debug("find by id in : {}", userIds.stream().map(id -> "" + id).collect(Collectors.joining(",")));
         StringFilter userIdFilter = new StringFilter();
         userIdFilter.setIn(userIds);
-        return userRepository.findAll(userIdInSpec);
         Specification<User> userIdInSpec = buildSpecification(userIdFilter, User_.id);
+        return userRepository.findAll(userIdInSpec);
     }
-
 
     /**
      * Function to convert {@link UserCriteria} to a {@link Specification}
@@ -70,7 +66,7 @@ public class UserQueryService extends QueryService<User> {
                 specification = specification.and(distinct(criteria.getDistinct()));
             }
             if (criteria.getId() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getId(), User_.id));
+                specification = specification.and(buildSpecification(criteria.getId(), User_.id));
             }
         }
         return specification;

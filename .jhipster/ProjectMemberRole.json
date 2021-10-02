@@ -8,7 +8,7 @@
     {
       "fieldName": "projectMemberRole",
       "fieldType": "ProjectMemberRoleEnum",
-      "fieldValues": "Y",
+      "fieldValues": "PROJECT_ADMIN,BILL_CONTRIBUTOR",
       "fieldValidateRules": ["required"]
     }
   ],

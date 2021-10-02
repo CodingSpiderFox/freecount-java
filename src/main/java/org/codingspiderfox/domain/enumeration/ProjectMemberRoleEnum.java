@@ -4,5 +4,6 @@ package org.codingspiderfox.domain.enumeration;
  * The ProjectMemberRoleEnum enumeration.
  */
 public enum ProjectMemberRoleEnum {
-    Y,
+    PROJECT_ADMIN,
+    BILL_CONTRIBUTOR,
 }
