@@ -54,6 +54,7 @@ public class CacheConfiguration {
             createCache(cm, org.codingspiderfox.domain.BillPosition.class.getName());
             createCache(cm, org.codingspiderfox.domain.ProjectMember.class.getName());
             createCache(cm, org.codingspiderfox.domain.Product.class.getName());
+            createCache(cm, org.codingspiderfox.domain.Stock.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

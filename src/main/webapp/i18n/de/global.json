@@ -13,6 +13,7 @@
         "billPosition": "Bill Position",
         "projectMember": "Project Member",
         "product": "Product",
+        "stock": "Stock",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

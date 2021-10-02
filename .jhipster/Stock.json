@@ -1,0 +1,39 @@
+{
+  "fields": [
+    {
+      "fieldName": "addedTimestamp",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "storageLocation",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "calculatedExpiryTimestamp",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "manualSetExpiryTimestamp",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": []
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipName": "product",
+      "otherEntityName": "product",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"],
+      "otherEntityField": "id"
+    }
+  ],
+  "service": "serviceImpl",
+  "dto": "mapstruct",
+  "jpaMetamodelFiltering": true,
+  "readOnly": false,
+  "pagination": "infinite-scroll",
+  "name": "Stock",
+  "changelogDate": "20211002081528"
+}
