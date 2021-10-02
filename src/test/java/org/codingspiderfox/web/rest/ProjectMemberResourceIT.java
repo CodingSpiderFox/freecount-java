@@ -7,6 +7,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -192,8 +193,14 @@ class ProjectMemberResourceIT {
         // Disconnect from session so that the updates on updatedProjectMember are not directly saved in db
         em.detach(updatedProjectMember);
 
+        Project project = new Project();
+        project.setName("project");
+        project.setKey("project");
+        project.setCreateTimestamp(ZonedDateTime.now());
+        em.persist(project);
+        em.flush();
         // Update the Project with new association value
-        updatedProjectMember.setProject();
+        updatedProjectMember.setProject(project);
         ProjectMemberDTO updatedProjectMemberDTO = projectMemberMapper.toDto(updatedProjectMember);
         assertThat(updatedProjectMemberDTO).isNotNull();
 
