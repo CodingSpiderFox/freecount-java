@@ -109,7 +109,7 @@ class TwoUsersFullIntegrationTest {
             .andExpect(status().isCreated());
 
         Project project = projectRepository.findAll().stream().findFirst().get();
-        assertEquals("projectacbcd", project.getKey());
+        assertEquals("projectabcd", project.getKey());
 
 
         ProjectMember member1 = new ProjectMember();

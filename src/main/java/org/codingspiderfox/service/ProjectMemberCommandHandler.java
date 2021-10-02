@@ -3,7 +3,6 @@ package org.codingspiderfox.service;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,16 +11,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.codingspiderfox.domain.Project;
 import org.codingspiderfox.domain.ProjectMember;
-import org.codingspiderfox.domain.ProjectMemberPermission;
 import org.codingspiderfox.domain.ProjectMemberRole;
 import org.codingspiderfox.domain.ProjectMemberRoleAssignment;
 import org.codingspiderfox.domain.User;
 import org.codingspiderfox.domain.enumeration.ProjectMemberRoleEnum;
-import org.codingspiderfox.repository.ProjectMemberPermissionRepository;
 import org.codingspiderfox.repository.ProjectMemberRepository;
 import org.codingspiderfox.repository.ProjectMemberRoleAssignmentRepository;
 import org.codingspiderfox.repository.ProjectMemberRoleRepository;
@@ -62,6 +60,12 @@ public class ProjectMemberCommandHandler {
     @Autowired
     private ProjectMemberRoleQueryService projectMemberRoleQueryService;
 
+    @Autowired
+    private ProjectMemberPermissionAssignmentQueryService projectMemberPermissionAssignmentQueryService;
+
+    @Autowired
+    private ProjectMemberRoleAssignmentQueryService projectMemberRoleAssignmentQueryService;
+
     private ExecutorService executor = Executors.newFixedThreadPool(10);
 
     @Transactional
@@ -98,7 +102,7 @@ public class ProjectMemberCommandHandler {
 
     @SneakyThrows
     public Boolean addMembersToProjectWithDefaultPermissions(Long projectId, List<String> newMemberUserIds) {
-        Future<Boolean> currentLoggedInUserHasAdminPermissions = checkCurrentUserHasAdminPermissions(
+        Future<Boolean> currentLoggedInUserHasAdminPermissions = checkCurrentUserHasPermissionToAddMemberToProject(
             SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new IllegalStateException("No login name present")),
             projectId
         );
@@ -165,9 +169,10 @@ public class ProjectMemberCommandHandler {
         return executor.submit(() -> userQueryService.findByIdIn(newMemberUserIds));
     }
 
-    private Future<Boolean> checkCurrentUserHasAdminPermissions(String currentUserLogin, Long projectId) {
-        return executor.submit(() -> {
-            return !projectMemberQueryService.findByAdminUserLoginAndProject(currentUserLogin, projectId).isEmpty();
-        });
+    @SneakyThrows
+    private Future<Boolean> checkCurrentUserHasPermissionToAddMemberToProject(String currentUserLogin, Long projectId) {
+        Future<Boolean> hasAddMemberPermission = executor.submit(() -> projectMemberPermissionAssignmentQueryService.hasAddMemberPermissionAssignmentForProjectIdAndUserLogin(currentUserLogin, projectId));
+        Future<Boolean> hasRoleThatAllowsToAddMemberToProject = executor.submit(() -> projectMemberRoleAssignmentQueryService.hasRoleAssignmentForProjectAndUserThatAllowsAddingMembersToProject(currentUserLogin, projectId));
+        return executor.submit(() -> hasAddMemberPermission.get() && hasRoleThatAllowsToAddMemberToProject.get());
     }
 }

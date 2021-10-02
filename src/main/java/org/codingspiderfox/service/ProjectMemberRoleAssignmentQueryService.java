@@ -1,12 +1,18 @@
 package org.codingspiderfox.service;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.criteria.JoinType;
+
 import org.codingspiderfox.domain.*; // for static metamodels
 import org.codingspiderfox.domain.ProjectMemberRoleAssignment;
+import org.codingspiderfox.domain.enumeration.ProjectMemberPermissionEnum;
+import org.codingspiderfox.domain.enumeration.ProjectMemberRoleEnum;
 import org.codingspiderfox.repository.ProjectMemberRoleAssignmentRepository;
 import org.codingspiderfox.repository.search.ProjectMemberRoleAssignmentSearchRepository;
+import org.codingspiderfox.service.criteria.ProjectMemberPermissionCriteria;
 import org.codingspiderfox.service.criteria.ProjectMemberRoleAssignmentCriteria;
+import org.codingspiderfox.service.criteria.ProjectMemberRoleCriteria;
 import org.codingspiderfox.service.dto.ProjectMemberRoleAssignmentDTO;
 import org.codingspiderfox.service.mapper.ProjectMemberRoleAssignmentMapper;
 import org.slf4j.Logger;
@@ -17,6 +23,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.jhipster.service.QueryService;
+import tech.jhipster.service.filter.LongFilter;
+import tech.jhipster.service.filter.StringFilter;
 
 /**
  * Service for executing complex queries for {@link ProjectMemberRoleAssignment} entities in the database.
@@ -48,6 +56,7 @@ public class ProjectMemberRoleAssignmentQueryService extends QueryService<Projec
 
     /**
      * Return a {@link List} of {@link ProjectMemberRoleAssignmentDTO} which matches the criteria from the database.
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
@@ -60,8 +69,9 @@ public class ProjectMemberRoleAssignmentQueryService extends QueryService<Projec
 
     /**
      * Return a {@link Page} of {@link ProjectMemberRoleAssignmentDTO} which matches the criteria from the database.
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
-     * @param page The page, which should be returned.
+     * @param page     The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
@@ -73,6 +83,7 @@ public class ProjectMemberRoleAssignmentQueryService extends QueryService<Projec
 
     /**
      * Return the number of matching entities in the database.
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the number of matching entities.
      */
@@ -83,8 +94,31 @@ public class ProjectMemberRoleAssignmentQueryService extends QueryService<Projec
         return projectMemberRoleAssignmentRepository.count(specification);
     }
 
+    @Transactional(readOnly = true)
+    public Boolean hasRoleAssignmentForProjectAndUserThatAllowsAddingMembersToProject(String currentUserLogin, Long projectId) {
+        LongFilter projectIdFilter = new LongFilter();
+        projectIdFilter.setEquals(projectId);
+        Specification<ProjectMemberRoleAssignment> specification = Specification.where(null);
+        specification = specification.and(buildSpecification(projectIdFilter, root -> root.join(
+            ProjectMemberRoleAssignment_.projectMember, JoinType.LEFT).join(ProjectMember_.project).get(Project_.id)
+        ));
+        StringFilter userLoginFilter = new StringFilter();
+        userLoginFilter.setEquals(currentUserLogin);
+        specification = specification.and(buildSpecification(userLoginFilter, root ->
+            root.join(ProjectMemberRoleAssignment_.projectMember, JoinType.LEFT).join(ProjectMember_.user).get(User_.login)));
+
+        ProjectMemberRoleCriteria.ProjectMemberRoleEnumFilter rolesFilter =
+            new ProjectMemberRoleCriteria.ProjectMemberRoleEnumFilter();
+        rolesFilter.setIn(Arrays.asList(ProjectMemberRoleEnum.PROJECT_ADMIN));
+
+        specification = specification.and(buildSpecification(rolesFilter, root -> root.join(ProjectMemberRoleAssignment_.projectMemberRoles).get(ProjectMemberRole_.projectMemberRole)));
+
+        return !projectMemberRoleAssignmentRepository.findAll(specification).isEmpty();
+    }
+
     /**
      * Function to convert {@link ProjectMemberRoleAssignmentCriteria} to a {@link Specification}
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching {@link Specification} of the entity.
      */

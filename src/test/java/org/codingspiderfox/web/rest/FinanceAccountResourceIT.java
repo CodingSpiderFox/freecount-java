@@ -135,7 +135,7 @@ class FinanceAccountResourceIT {
         assertThat(testFinanceAccount.getCurrentBalance()).isEqualTo(DEFAULT_CURRENT_BALANCE);
 
         // Validate the id for MapsId, the ids must be same
-        assertThat(testFinanceAccount.getId()).isEqualTo(testFinanceAccount.getUser().getId());
+        assertThat(testFinanceAccount.getId()).isEqualTo(testFinanceAccount.getOwner().getId());
 
         // Validate the FinanceAccount in Elasticsearch
         verify(mockFinanceAccountSearchRepository, times(1)).save(testFinanceAccount);
@@ -187,7 +187,7 @@ class FinanceAccountResourceIT {
         em.detach(updatedFinanceAccount);
 
         // Update the User with new association value
-        updatedFinanceAccount.setUser(user);
+        updatedFinanceAccount.setOwner(user);
         FinanceAccountDTO updatedFinanceAccountDTO = financeAccountMapper.toDto(updatedFinanceAccount);
         assertThat(updatedFinanceAccountDTO).isNotNull();
 

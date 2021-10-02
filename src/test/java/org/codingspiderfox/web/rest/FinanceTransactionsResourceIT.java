@@ -165,7 +165,7 @@ class FinanceTransactionsResourceIT {
         assertThat(testFinanceTransactions.getComment()).isEqualTo(DEFAULT_COMMENT);
 
         // Validate the id for MapsId, the ids must be same
-        assertThat(testFinanceTransactions.getId()).isEqualTo(testFinanceTransactions.getFinanceAccount().getId());
+        assertThat(testFinanceTransactions.getId()).isEqualTo(testFinanceTransactions.getDestinationAccount().getId());
 
         // Validate the FinanceTransactions in Elasticsearch
         verify(mockFinanceTransactionsSearchRepository, times(1)).save(testFinanceTransactions);
@@ -212,7 +212,7 @@ class FinanceTransactionsResourceIT {
         em.detach(updatedFinanceTransactions);
 
         // Update the FinanceAccount with new association value
-        updatedFinanceTransactions.setFinanceAccount();
+        updatedFinanceTransactions.setDestinationAccount(new FinanceAccount());
         FinanceTransactionsDTO updatedFinanceTransactionsDTO = financeTransactionsMapper.toDto(updatedFinanceTransactions);
         assertThat(updatedFinanceTransactionsDTO).isNotNull();
 

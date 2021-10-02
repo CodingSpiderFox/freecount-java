@@ -52,8 +52,8 @@ class ProjectMemberRoleResourceIT {
     private static final ZonedDateTime UPDATED_CREATED_TIMESTAMP = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
     private static final ZonedDateTime SMALLER_CREATED_TIMESTAMP = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
 
-    private static final ProjectMemberRoleEnum DEFAULT_PROJECT_MEMBER_ROLE = ProjectMemberRoleEnum.Y;
-    private static final ProjectMemberRoleEnum UPDATED_PROJECT_MEMBER_ROLE = ProjectMemberRoleEnum.Y;
+    private static final ProjectMemberRoleEnum DEFAULT_PROJECT_MEMBER_ROLE = ProjectMemberRoleEnum.BILL_CONTRIBUTOR;
+    private static final ProjectMemberRoleEnum UPDATED_PROJECT_MEMBER_ROLE = ProjectMemberRoleEnum.PROJECT_ADMIN;
 
     private static final String ENTITY_API_URL = "/api/project-member-roles";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";

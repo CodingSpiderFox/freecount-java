@@ -1,15 +1,20 @@
 package org.codingspiderfox.service;
 
 import com.carrotsearch.hppc.ByteContainer;
+
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.persistence.criteria.JoinType;
+
 import org.codingspiderfox.domain.*; // for static metamodels
 import org.codingspiderfox.domain.ProjectMember;
+import org.codingspiderfox.domain.enumeration.ProjectMemberPermissionEnum;
 import org.codingspiderfox.repository.ProjectMemberRepository;
 import org.codingspiderfox.repository.search.ProjectMemberSearchRepository;
 import org.codingspiderfox.service.criteria.ProjectMemberCriteria;
+import org.codingspiderfox.service.criteria.ProjectMemberPermissionCriteria;
 import org.codingspiderfox.service.dto.ProjectMemberDTO;
 import org.codingspiderfox.service.mapper.ProjectMemberMapper;
 import org.slf4j.Logger;
@@ -20,6 +25,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.jhipster.service.QueryService;
+import tech.jhipster.service.filter.LongFilter;
+import tech.jhipster.service.filter.StringFilter;
 
 /**
  * Service for executing complex queries for {@link ProjectMember} entities in the database.
@@ -125,9 +132,5 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
             }
         }
         return specification;
-    }
-
-    public List<ProjectMember> findByAdminUserLoginAndProject(String currentUserLogin, Long projectId) {
-        return Collections.emptyList();
     }
 }

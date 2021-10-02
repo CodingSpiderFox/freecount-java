@@ -218,8 +218,9 @@ class BillPositionResourceIT {
         // Disconnect from session so that the updates on updatedBillPosition are not directly saved in db
         em.detach(updatedBillPosition);
 
+        Product product = new Product();
         // Update the Product with new association value
-        updatedBillPosition.setProduct();
+        updatedBillPosition.setProduct(product);
         BillPositionDTO updatedBillPositionDTO = billPositionMapper.toDto(updatedBillPosition);
         assertThat(updatedBillPositionDTO).isNotNull();
 

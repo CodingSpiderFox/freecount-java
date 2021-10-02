@@ -13,10 +13,10 @@ import java.util.Objects;
 /**
  * A DTO for the {@link org.codingspiderfox.domain.ProjectMember} entity.
  */
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class CreateProjectMemberDTO implements Serializable {
 
     private Long id;
