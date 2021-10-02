@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.persistence.criteria.JoinType;
 
+import liquibase.pro.packaged.L;
 import org.codingspiderfox.domain.*; // for static metamodels
 import org.codingspiderfox.domain.ProjectMember;
 import org.codingspiderfox.domain.enumeration.ProjectMemberRole;
@@ -22,6 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.jhipster.service.QueryService;
+import tech.jhipster.service.filter.LongFilter;
 import tech.jhipster.service.filter.RangeFilter;
 import tech.jhipster.service.filter.StringFilter;
 
@@ -54,9 +56,12 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
     }
 
     @Transactional(readOnly = true)
-    public List<ProjectMember> findByAdminUserLogin(String adminLoginName) {
+    public List<ProjectMember> findByAdminUserLoginAndProject(String adminLoginName, Long projectId) {
         StringFilter adminUserLoginFilter = new StringFilter();
         adminUserLoginFilter.setEquals(adminLoginName);
+
+        LongFilter projectIdFilter = new LongFilter();
+        projectIdFilter.setEquals(projectId);
 
         RangeFilter<ProjectPermission> projectPermissionFilter = new RangeFilter<>();
         projectPermissionFilter.setIn(Arrays.asList(ProjectPermission.ADD_MEMBER));
@@ -65,6 +70,7 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
         memberRoleFilter.setIn(Arrays.asList(ProjectMemberRole.PROJECT_ADMIN));
 
         ProjectMemberCriteria projectMemberCriteria = new ProjectMemberCriteria();
+        projectMemberCriteria.setProjectId(projectIdFilter);
         Specification<ProjectMember> permissionMemberEntryByLoginNameWithAddMemberPrivilegeFilter = createSpecification(projectMemberCriteria);
         permissionMemberEntryByLoginNameWithAddMemberPrivilegeFilter = permissionMemberEntryByLoginNameWithAddMemberPrivilegeFilter.and(
             buildSpecification(adminUserLoginFilter, root -> root.join(ProjectMember_.user, JoinType.LEFT)
