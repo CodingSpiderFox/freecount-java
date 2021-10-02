@@ -1,11 +1,16 @@
 package org.codingspiderfox.service;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.criteria.JoinType;
+
 import org.codingspiderfox.domain.*; // for static metamodels
 import org.codingspiderfox.domain.ProjectMember;
+import org.codingspiderfox.domain.enumeration.ProjectMemberRole;
+import org.codingspiderfox.domain.enumeration.ProjectPermission;
 import org.codingspiderfox.repository.ProjectMemberRepository;
 import org.codingspiderfox.repository.search.ProjectMemberSearchRepository;
+import org.codingspiderfox.service.criteria.BillPositionCriteria;
 import org.codingspiderfox.service.criteria.ProjectMemberCriteria;
 import org.codingspiderfox.service.dto.ProjectMemberDTO;
 import org.codingspiderfox.service.mapper.ProjectMemberMapper;
@@ -17,6 +22,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.jhipster.service.QueryService;
+import tech.jhipster.service.filter.RangeFilter;
+import tech.jhipster.service.filter.StringFilter;
 
 /**
  * Service for executing complex queries for {@link ProjectMember} entities in the database.
@@ -46,8 +53,29 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
         this.projectMemberSearchRepository = projectMemberSearchRepository;
     }
 
+    @Transactional(readOnly = true)
+    public List<ProjectMember> findByAdminUserLogin(String adminLoginName) {
+        StringFilter adminUserLoginFilter = new StringFilter();
+        adminUserLoginFilter.setEquals(adminLoginName);
+
+        RangeFilter<ProjectPermission> projectPermissionFilter = new RangeFilter<>();
+        projectPermissionFilter.setIn(Arrays.asList(ProjectPermission.ADD_MEMBER));
+
+        RangeFilter<ProjectMemberRole> memberRoleFilter = new RangeFilter<>();
+        memberRoleFilter.setIn(Arrays.asList(ProjectMemberRole.PROJECT_ADMIN));
+
+        ProjectMemberCriteria projectMemberCriteria = new ProjectMemberCriteria();
+        Specification<ProjectMember> permissionMemberEntryByLoginNameWithAddMemberPrivilegeFilter = createSpecification(projectMemberCriteria);
+        permissionMemberEntryByLoginNameWithAddMemberPrivilegeFilter = permissionMemberEntryByLoginNameWithAddMemberPrivilegeFilter.and(
+            buildSpecification(adminUserLoginFilter, root -> root.join(ProjectMember_.user, JoinType.LEFT)
+                .get(User_.login)));
+
+        return projectMemberRepository.findAll(permissionMemberEntryByLoginNameWithAddMemberPrivilegeFilter);
+    }
+
     /**
      * Return a {@link List} of {@link ProjectMemberDTO} which matches the criteria from the database.
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
@@ -60,8 +88,9 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
 
     /**
      * Return a {@link Page} of {@link ProjectMemberDTO} which matches the criteria from the database.
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
-     * @param page The page, which should be returned.
+     * @param page     The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
@@ -73,6 +102,7 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
 
     /**
      * Return the number of matching entities in the database.
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the number of matching entities.
      */
@@ -85,6 +115,7 @@ public class ProjectMemberQueryService extends QueryService<ProjectMember> {
 
     /**
      * Function to convert {@link ProjectMemberCriteria} to a {@link Specification}
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching {@link Specification} of the entity.
      */

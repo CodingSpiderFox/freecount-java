@@ -2,14 +2,11 @@ package org.codingspiderfox.service.criteria;
 
 import java.io.Serializable;
 import java.util.Objects;
+
 import org.codingspiderfox.domain.enumeration.ProjectMemberRole;
 import org.codingspiderfox.domain.enumeration.ProjectPermission;
 import tech.jhipster.service.Criteria;
-import tech.jhipster.service.filter.BooleanFilter;
-import tech.jhipster.service.filter.DoubleFilter;
 import tech.jhipster.service.filter.Filter;
-import tech.jhipster.service.filter.FloatFilter;
-import tech.jhipster.service.filter.IntegerFilter;
 import tech.jhipster.service.filter.LongFilter;
 import tech.jhipster.service.filter.StringFilter;
 import tech.jhipster.service.filter.ZonedDateTimeFilter;
@@ -30,7 +27,8 @@ public class ProjectMemberCriteria implements Serializable, Criteria {
      */
     public static class ProjectPermissionFilter extends Filter<ProjectPermission> {
 
-        public ProjectPermissionFilter() {}
+        public ProjectPermissionFilter() {
+        }
 
         public ProjectPermissionFilter(ProjectPermissionFilter filter) {
             super(filter);
@@ -47,7 +45,8 @@ public class ProjectMemberCriteria implements Serializable, Criteria {
      */
     public static class ProjectMemberRoleFilter extends Filter<ProjectMemberRole> {
 
-        public ProjectMemberRoleFilter() {}
+        public ProjectMemberRoleFilter() {
+        }
 
         public ProjectMemberRoleFilter(ProjectMemberRoleFilter filter) {
             super(filter);
@@ -75,7 +74,8 @@ public class ProjectMemberCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
-    public ProjectMemberCriteria() {}
+    public ProjectMemberCriteria() {
+    }
 
     public ProjectMemberCriteria(ProjectMemberCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
@@ -201,12 +201,12 @@ public class ProjectMemberCriteria implements Serializable, Criteria {
         final ProjectMemberCriteria that = (ProjectMemberCriteria) o;
         return (
             Objects.equals(id, that.id) &&
-            Objects.equals(additionalProjectPermissions, that.additionalProjectPermissions) &&
-            Objects.equals(roleInProject, that.roleInProject) &&
-            Objects.equals(addedTimestamp, that.addedTimestamp) &&
-            Objects.equals(userId, that.userId) &&
-            Objects.equals(projectId, that.projectId) &&
-            Objects.equals(distinct, that.distinct)
+                Objects.equals(additionalProjectPermissions, that.additionalProjectPermissions) &&
+                Objects.equals(roleInProject, that.roleInProject) &&
+                Objects.equals(addedTimestamp, that.addedTimestamp) &&
+                Objects.equals(userId, that.userId) &&
+                Objects.equals(projectId, that.projectId) &&
+                Objects.equals(distinct, that.distinct)
         );
     }
 
