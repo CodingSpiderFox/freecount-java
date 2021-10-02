@@ -56,11 +56,9 @@ class ProductResourceIT {
     private static final Boolean DEFAULT_EXPIRE_MEANS_BAD = false;
     private static final Boolean UPDATED_EXPIRE_MEANS_BAD = true;
 
-    private static final String DEFAULT_Y = "AAAAAAAAAA";
-    private static final String UPDATED_Y = "BBBBBBBBBB";
-
-    private static final String DEFAULT_H = "AAAAAAAAAA";
-    private static final String UPDATED_H = "BBBBBBBBBB";
+    private static final Double DEFAULT_DEFAULT_PRICE = 1D;
+    private static final Double UPDATED_DEFAULT_PRICE = 2D;
+    private static final Double SMALLER_DEFAULT_PRICE = 1D - 1D;
 
     private static final String ENTITY_API_URL = "/api/products";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -103,8 +101,7 @@ class ProductResourceIT {
             .scannerId(DEFAULT_SCANNER_ID)
             .usualDurationFromBuyTillExpire(DEFAULT_USUAL_DURATION_FROM_BUY_TILL_EXPIRE)
             .expireMeansBad(DEFAULT_EXPIRE_MEANS_BAD)
-            .y(DEFAULT_Y)
-            .h(DEFAULT_H);
+            .defaultPrice(DEFAULT_DEFAULT_PRICE);
         return product;
     }
 
@@ -120,8 +117,7 @@ class ProductResourceIT {
             .scannerId(UPDATED_SCANNER_ID)
             .usualDurationFromBuyTillExpire(UPDATED_USUAL_DURATION_FROM_BUY_TILL_EXPIRE)
             .expireMeansBad(UPDATED_EXPIRE_MEANS_BAD)
-            .y(UPDATED_Y)
-            .h(UPDATED_H);
+            .defaultPrice(UPDATED_DEFAULT_PRICE);
         return product;
     }
 
@@ -153,8 +149,7 @@ class ProductResourceIT {
         assertThat(testProduct.getScannerId()).isEqualTo(DEFAULT_SCANNER_ID);
         assertThat(testProduct.getUsualDurationFromBuyTillExpire()).isEqualTo(DEFAULT_USUAL_DURATION_FROM_BUY_TILL_EXPIRE);
         assertThat(testProduct.getExpireMeansBad()).isEqualTo(DEFAULT_EXPIRE_MEANS_BAD);
-        assertThat(testProduct.getY()).isEqualTo(DEFAULT_Y);
-        assertThat(testProduct.getH()).isEqualTo(DEFAULT_H);
+        assertThat(testProduct.getDefaultPrice()).isEqualTo(DEFAULT_DEFAULT_PRICE);
 
         // Validate the Product in Elasticsearch
         verify(mockProductSearchRepository, times(1)).save(testProduct);
@@ -258,6 +253,29 @@ class ProductResourceIT {
 
     @Test
     @Transactional
+    void checkDefaultPriceIsRequired() throws Exception {
+        int databaseSizeBeforeTest = productRepository.findAll().size();
+        // set the field null
+        product.setDefaultPrice(null);
+
+        // Create the Product, which fails.
+        ProductDTO productDTO = productMapper.toDto(product);
+
+        restProductMockMvc
+            .perform(
+                post(ENTITY_API_URL)
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtil.convertObjectToJsonBytes(productDTO))
+            )
+            .andExpect(status().isBadRequest());
+
+        List<Product> productList = productRepository.findAll();
+        assertThat(productList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     void getAllProducts() throws Exception {
         // Initialize the database
         productRepository.saveAndFlush(product);
@@ -274,8 +292,7 @@ class ProductResourceIT {
                 jsonPath("$.[*].usualDurationFromBuyTillExpire").value(hasItem(DEFAULT_USUAL_DURATION_FROM_BUY_TILL_EXPIRE.toString()))
             )
             .andExpect(jsonPath("$.[*].expireMeansBad").value(hasItem(DEFAULT_EXPIRE_MEANS_BAD.booleanValue())))
-            .andExpect(jsonPath("$.[*].y").value(hasItem(DEFAULT_Y)))
-            .andExpect(jsonPath("$.[*].h").value(hasItem(DEFAULT_H)));
+            .andExpect(jsonPath("$.[*].defaultPrice").value(hasItem(DEFAULT_DEFAULT_PRICE.doubleValue())));
     }
 
     @Test
@@ -294,8 +311,7 @@ class ProductResourceIT {
             .andExpect(jsonPath("$.scannerId").value(DEFAULT_SCANNER_ID))
             .andExpect(jsonPath("$.usualDurationFromBuyTillExpire").value(DEFAULT_USUAL_DURATION_FROM_BUY_TILL_EXPIRE.toString()))
             .andExpect(jsonPath("$.expireMeansBad").value(DEFAULT_EXPIRE_MEANS_BAD.booleanValue()))
-            .andExpect(jsonPath("$.y").value(DEFAULT_Y))
-            .andExpect(jsonPath("$.h").value(DEFAULT_H));
+            .andExpect(jsonPath("$.defaultPrice").value(DEFAULT_DEFAULT_PRICE.doubleValue()));
     }
 
     @Test
@@ -635,158 +651,106 @@ class ProductResourceIT {
 
     @Test
     @Transactional
-    void getAllProductsByYIsEqualToSomething() throws Exception {
+    void getAllProductsByDefaultPriceIsEqualToSomething() throws Exception {
         // Initialize the database
         productRepository.saveAndFlush(product);
 
-        // Get all the productList where y equals to DEFAULT_Y
-        defaultProductShouldBeFound("y.equals=" + DEFAULT_Y);
+        // Get all the productList where defaultPrice equals to DEFAULT_DEFAULT_PRICE
+        defaultProductShouldBeFound("defaultPrice.equals=" + DEFAULT_DEFAULT_PRICE);
 
-        // Get all the productList where y equals to UPDATED_Y
-        defaultProductShouldNotBeFound("y.equals=" + UPDATED_Y);
+        // Get all the productList where defaultPrice equals to UPDATED_DEFAULT_PRICE
+        defaultProductShouldNotBeFound("defaultPrice.equals=" + UPDATED_DEFAULT_PRICE);
     }
 
     @Test
     @Transactional
-    void getAllProductsByYIsNotEqualToSomething() throws Exception {
+    void getAllProductsByDefaultPriceIsNotEqualToSomething() throws Exception {
         // Initialize the database
         productRepository.saveAndFlush(product);
 
-        // Get all the productList where y not equals to DEFAULT_Y
-        defaultProductShouldNotBeFound("y.notEquals=" + DEFAULT_Y);
+        // Get all the productList where defaultPrice not equals to DEFAULT_DEFAULT_PRICE
+        defaultProductShouldNotBeFound("defaultPrice.notEquals=" + DEFAULT_DEFAULT_PRICE);
 
-        // Get all the productList where y not equals to UPDATED_Y
-        defaultProductShouldBeFound("y.notEquals=" + UPDATED_Y);
+        // Get all the productList where defaultPrice not equals to UPDATED_DEFAULT_PRICE
+        defaultProductShouldBeFound("defaultPrice.notEquals=" + UPDATED_DEFAULT_PRICE);
     }
 
     @Test
     @Transactional
-    void getAllProductsByYIsInShouldWork() throws Exception {
+    void getAllProductsByDefaultPriceIsInShouldWork() throws Exception {
         // Initialize the database
         productRepository.saveAndFlush(product);
 
-        // Get all the productList where y in DEFAULT_Y or UPDATED_Y
-        defaultProductShouldBeFound("y.in=" + DEFAULT_Y + "," + UPDATED_Y);
+        // Get all the productList where defaultPrice in DEFAULT_DEFAULT_PRICE or UPDATED_DEFAULT_PRICE
+        defaultProductShouldBeFound("defaultPrice.in=" + DEFAULT_DEFAULT_PRICE + "," + UPDATED_DEFAULT_PRICE);
 
-        // Get all the productList where y equals to UPDATED_Y
-        defaultProductShouldNotBeFound("y.in=" + UPDATED_Y);
+        // Get all the productList where defaultPrice equals to UPDATED_DEFAULT_PRICE
+        defaultProductShouldNotBeFound("defaultPrice.in=" + UPDATED_DEFAULT_PRICE);
     }
 
     @Test
     @Transactional
-    void getAllProductsByYIsNullOrNotNull() throws Exception {
+    void getAllProductsByDefaultPriceIsNullOrNotNull() throws Exception {
         // Initialize the database
         productRepository.saveAndFlush(product);
 
-        // Get all the productList where y is not null
-        defaultProductShouldBeFound("y.specified=true");
+        // Get all the productList where defaultPrice is not null
+        defaultProductShouldBeFound("defaultPrice.specified=true");
 
-        // Get all the productList where y is null
-        defaultProductShouldNotBeFound("y.specified=false");
+        // Get all the productList where defaultPrice is null
+        defaultProductShouldNotBeFound("defaultPrice.specified=false");
     }
 
     @Test
     @Transactional
-    void getAllProductsByYContainsSomething() throws Exception {
+    void getAllProductsByDefaultPriceIsGreaterThanOrEqualToSomething() throws Exception {
         // Initialize the database
         productRepository.saveAndFlush(product);
 
-        // Get all the productList where y contains DEFAULT_Y
-        defaultProductShouldBeFound("y.contains=" + DEFAULT_Y);
+        // Get all the productList where defaultPrice is greater than or equal to DEFAULT_DEFAULT_PRICE
+        defaultProductShouldBeFound("defaultPrice.greaterThanOrEqual=" + DEFAULT_DEFAULT_PRICE);
 
-        // Get all the productList where y contains UPDATED_Y
-        defaultProductShouldNotBeFound("y.contains=" + UPDATED_Y);
+        // Get all the productList where defaultPrice is greater than or equal to UPDATED_DEFAULT_PRICE
+        defaultProductShouldNotBeFound("defaultPrice.greaterThanOrEqual=" + UPDATED_DEFAULT_PRICE);
     }
 
     @Test
     @Transactional
-    void getAllProductsByYNotContainsSomething() throws Exception {
+    void getAllProductsByDefaultPriceIsLessThanOrEqualToSomething() throws Exception {
         // Initialize the database
         productRepository.saveAndFlush(product);
 
-        // Get all the productList where y does not contain DEFAULT_Y
-        defaultProductShouldNotBeFound("y.doesNotContain=" + DEFAULT_Y);
+        // Get all the productList where defaultPrice is less than or equal to DEFAULT_DEFAULT_PRICE
+        defaultProductShouldBeFound("defaultPrice.lessThanOrEqual=" + DEFAULT_DEFAULT_PRICE);
 
-        // Get all the productList where y does not contain UPDATED_Y
-        defaultProductShouldBeFound("y.doesNotContain=" + UPDATED_Y);
+        // Get all the productList where defaultPrice is less than or equal to SMALLER_DEFAULT_PRICE
+        defaultProductShouldNotBeFound("defaultPrice.lessThanOrEqual=" + SMALLER_DEFAULT_PRICE);
     }
 
     @Test
     @Transactional
-    void getAllProductsByHIsEqualToSomething() throws Exception {
+    void getAllProductsByDefaultPriceIsLessThanSomething() throws Exception {
         // Initialize the database
         productRepository.saveAndFlush(product);
 
-        // Get all the productList where h equals to DEFAULT_H
-        defaultProductShouldBeFound("h.equals=" + DEFAULT_H);
+        // Get all the productList where defaultPrice is less than DEFAULT_DEFAULT_PRICE
+        defaultProductShouldNotBeFound("defaultPrice.lessThan=" + DEFAULT_DEFAULT_PRICE);
 
-        // Get all the productList where h equals to UPDATED_H
-        defaultProductShouldNotBeFound("h.equals=" + UPDATED_H);
+        // Get all the productList where defaultPrice is less than UPDATED_DEFAULT_PRICE
+        defaultProductShouldBeFound("defaultPrice.lessThan=" + UPDATED_DEFAULT_PRICE);
     }
 
     @Test
     @Transactional
-    void getAllProductsByHIsNotEqualToSomething() throws Exception {
+    void getAllProductsByDefaultPriceIsGreaterThanSomething() throws Exception {
         // Initialize the database
         productRepository.saveAndFlush(product);
 
-        // Get all the productList where h not equals to DEFAULT_H
-        defaultProductShouldNotBeFound("h.notEquals=" + DEFAULT_H);
+        // Get all the productList where defaultPrice is greater than DEFAULT_DEFAULT_PRICE
+        defaultProductShouldNotBeFound("defaultPrice.greaterThan=" + DEFAULT_DEFAULT_PRICE);
 
-        // Get all the productList where h not equals to UPDATED_H
-        defaultProductShouldBeFound("h.notEquals=" + UPDATED_H);
-    }
-
-    @Test
-    @Transactional
-    void getAllProductsByHIsInShouldWork() throws Exception {
-        // Initialize the database
-        productRepository.saveAndFlush(product);
-
-        // Get all the productList where h in DEFAULT_H or UPDATED_H
-        defaultProductShouldBeFound("h.in=" + DEFAULT_H + "," + UPDATED_H);
-
-        // Get all the productList where h equals to UPDATED_H
-        defaultProductShouldNotBeFound("h.in=" + UPDATED_H);
-    }
-
-    @Test
-    @Transactional
-    void getAllProductsByHIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        productRepository.saveAndFlush(product);
-
-        // Get all the productList where h is not null
-        defaultProductShouldBeFound("h.specified=true");
-
-        // Get all the productList where h is null
-        defaultProductShouldNotBeFound("h.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllProductsByHContainsSomething() throws Exception {
-        // Initialize the database
-        productRepository.saveAndFlush(product);
-
-        // Get all the productList where h contains DEFAULT_H
-        defaultProductShouldBeFound("h.contains=" + DEFAULT_H);
-
-        // Get all the productList where h contains UPDATED_H
-        defaultProductShouldNotBeFound("h.contains=" + UPDATED_H);
-    }
-
-    @Test
-    @Transactional
-    void getAllProductsByHNotContainsSomething() throws Exception {
-        // Initialize the database
-        productRepository.saveAndFlush(product);
-
-        // Get all the productList where h does not contain DEFAULT_H
-        defaultProductShouldNotBeFound("h.doesNotContain=" + DEFAULT_H);
-
-        // Get all the productList where h does not contain UPDATED_H
-        defaultProductShouldBeFound("h.doesNotContain=" + UPDATED_H);
+        // Get all the productList where defaultPrice is greater than SMALLER_DEFAULT_PRICE
+        defaultProductShouldBeFound("defaultPrice.greaterThan=" + SMALLER_DEFAULT_PRICE);
     }
 
     /**
@@ -804,8 +768,7 @@ class ProductResourceIT {
                 jsonPath("$.[*].usualDurationFromBuyTillExpire").value(hasItem(DEFAULT_USUAL_DURATION_FROM_BUY_TILL_EXPIRE.toString()))
             )
             .andExpect(jsonPath("$.[*].expireMeansBad").value(hasItem(DEFAULT_EXPIRE_MEANS_BAD.booleanValue())))
-            .andExpect(jsonPath("$.[*].y").value(hasItem(DEFAULT_Y)))
-            .andExpect(jsonPath("$.[*].h").value(hasItem(DEFAULT_H)));
+            .andExpect(jsonPath("$.[*].defaultPrice").value(hasItem(DEFAULT_DEFAULT_PRICE.doubleValue())));
 
         // Check, that the count call also returns 1
         restProductMockMvc
@@ -858,8 +821,7 @@ class ProductResourceIT {
             .scannerId(UPDATED_SCANNER_ID)
             .usualDurationFromBuyTillExpire(UPDATED_USUAL_DURATION_FROM_BUY_TILL_EXPIRE)
             .expireMeansBad(UPDATED_EXPIRE_MEANS_BAD)
-            .y(UPDATED_Y)
-            .h(UPDATED_H);
+            .defaultPrice(UPDATED_DEFAULT_PRICE);
         ProductDTO productDTO = productMapper.toDto(updatedProduct);
 
         restProductMockMvc
@@ -879,8 +841,7 @@ class ProductResourceIT {
         assertThat(testProduct.getScannerId()).isEqualTo(UPDATED_SCANNER_ID);
         assertThat(testProduct.getUsualDurationFromBuyTillExpire()).isEqualTo(UPDATED_USUAL_DURATION_FROM_BUY_TILL_EXPIRE);
         assertThat(testProduct.getExpireMeansBad()).isEqualTo(UPDATED_EXPIRE_MEANS_BAD);
-        assertThat(testProduct.getY()).isEqualTo(UPDATED_Y);
-        assertThat(testProduct.getH()).isEqualTo(UPDATED_H);
+        assertThat(testProduct.getDefaultPrice()).isEqualTo(UPDATED_DEFAULT_PRICE);
 
         // Validate the Product in Elasticsearch
         verify(mockProductSearchRepository).save(testProduct);
@@ -979,7 +940,7 @@ class ProductResourceIT {
         Product partialUpdatedProduct = new Product();
         partialUpdatedProduct.setId(product.getId());
 
-        partialUpdatedProduct.y(UPDATED_Y).h(UPDATED_H);
+        partialUpdatedProduct.defaultPrice(UPDATED_DEFAULT_PRICE);
 
         restProductMockMvc
             .perform(
@@ -998,8 +959,7 @@ class ProductResourceIT {
         assertThat(testProduct.getScannerId()).isEqualTo(DEFAULT_SCANNER_ID);
         assertThat(testProduct.getUsualDurationFromBuyTillExpire()).isEqualTo(DEFAULT_USUAL_DURATION_FROM_BUY_TILL_EXPIRE);
         assertThat(testProduct.getExpireMeansBad()).isEqualTo(DEFAULT_EXPIRE_MEANS_BAD);
-        assertThat(testProduct.getY()).isEqualTo(UPDATED_Y);
-        assertThat(testProduct.getH()).isEqualTo(UPDATED_H);
+        assertThat(testProduct.getDefaultPrice()).isEqualTo(UPDATED_DEFAULT_PRICE);
     }
 
     @Test
@@ -1019,8 +979,7 @@ class ProductResourceIT {
             .scannerId(UPDATED_SCANNER_ID)
             .usualDurationFromBuyTillExpire(UPDATED_USUAL_DURATION_FROM_BUY_TILL_EXPIRE)
             .expireMeansBad(UPDATED_EXPIRE_MEANS_BAD)
-            .y(UPDATED_Y)
-            .h(UPDATED_H);
+            .defaultPrice(UPDATED_DEFAULT_PRICE);
 
         restProductMockMvc
             .perform(
@@ -1039,8 +998,7 @@ class ProductResourceIT {
         assertThat(testProduct.getScannerId()).isEqualTo(UPDATED_SCANNER_ID);
         assertThat(testProduct.getUsualDurationFromBuyTillExpire()).isEqualTo(UPDATED_USUAL_DURATION_FROM_BUY_TILL_EXPIRE);
         assertThat(testProduct.getExpireMeansBad()).isEqualTo(UPDATED_EXPIRE_MEANS_BAD);
-        assertThat(testProduct.getY()).isEqualTo(UPDATED_Y);
-        assertThat(testProduct.getH()).isEqualTo(UPDATED_H);
+        assertThat(testProduct.getDefaultPrice()).isEqualTo(UPDATED_DEFAULT_PRICE);
     }
 
     @Test
@@ -1166,7 +1124,6 @@ class ProductResourceIT {
                 jsonPath("$.[*].usualDurationFromBuyTillExpire").value(hasItem(DEFAULT_USUAL_DURATION_FROM_BUY_TILL_EXPIRE.toString()))
             )
             .andExpect(jsonPath("$.[*].expireMeansBad").value(hasItem(DEFAULT_EXPIRE_MEANS_BAD.booleanValue())))
-            .andExpect(jsonPath("$.[*].y").value(hasItem(DEFAULT_Y)))
-            .andExpect(jsonPath("$.[*].h").value(hasItem(DEFAULT_H)));
+            .andExpect(jsonPath("$.[*].defaultPrice").value(hasItem(DEFAULT_DEFAULT_PRICE.doubleValue())));
     }
 }

@@ -48,6 +48,9 @@ class BillPositionResourceIT {
     private static final Double DEFAULT_COST = 1D;
     private static final Double UPDATED_COST = 2D;
 
+    private static final Integer DEFAULT_ORDER = 1;
+    private static final Integer UPDATED_ORDER = 2;
+
     private static final String ENTITY_API_URL = "/api/bill-positions";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
     private static final String ENTITY_SEARCH_API_URL = "/api/_search/bill-positions";
@@ -84,7 +87,7 @@ class BillPositionResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static BillPosition createEntity(EntityManager em) {
-        BillPosition billPosition = new BillPosition().title(DEFAULT_TITLE).cost(DEFAULT_COST);
+        BillPosition billPosition = new BillPosition().title(DEFAULT_TITLE).cost(DEFAULT_COST).order(DEFAULT_ORDER);
         // Add required entity
         Bill bill;
         if (TestUtil.findAll(em, Bill.class).isEmpty()) {
@@ -105,7 +108,7 @@ class BillPositionResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static BillPosition createUpdatedEntity(EntityManager em) {
-        BillPosition billPosition = new BillPosition().title(UPDATED_TITLE).cost(UPDATED_COST);
+        BillPosition billPosition = new BillPosition().title(UPDATED_TITLE).cost(UPDATED_COST).order(UPDATED_ORDER);
         // Add required entity
         Bill bill;
         if (TestUtil.findAll(em, Bill.class).isEmpty()) {
@@ -145,6 +148,7 @@ class BillPositionResourceIT {
         BillPosition testBillPosition = billPositionList.get(billPositionList.size() - 1);
         assertThat(testBillPosition.getTitle()).isEqualTo(DEFAULT_TITLE);
         assertThat(testBillPosition.getCost()).isEqualTo(DEFAULT_COST);
+        assertThat(testBillPosition.getOrder()).isEqualTo(DEFAULT_ORDER);
 
         // Validate the BillPosition in Elasticsearch
         verify(mockBillPositionSearchRepository, times(1)).save(testBillPosition);
@@ -225,6 +229,29 @@ class BillPositionResourceIT {
 
     @Test
     @Transactional
+    void checkOrderIsRequired() throws Exception {
+        int databaseSizeBeforeTest = billPositionRepository.findAll().size();
+        // set the field null
+        billPosition.setOrder(null);
+
+        // Create the BillPosition, which fails.
+        BillPositionDTO billPositionDTO = billPositionMapper.toDto(billPosition);
+
+        restBillPositionMockMvc
+            .perform(
+                post(ENTITY_API_URL)
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtil.convertObjectToJsonBytes(billPositionDTO))
+            )
+            .andExpect(status().isBadRequest());
+
+        List<BillPosition> billPositionList = billPositionRepository.findAll();
+        assertThat(billPositionList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     void getAllBillPositions() throws Exception {
         // Initialize the database
         billPositionRepository.saveAndFlush(billPosition);
@@ -236,7 +263,8 @@ class BillPositionResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(billPosition.getId().intValue())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
-            .andExpect(jsonPath("$.[*].cost").value(hasItem(DEFAULT_COST.doubleValue())));
+            .andExpect(jsonPath("$.[*].cost").value(hasItem(DEFAULT_COST.doubleValue())))
+            .andExpect(jsonPath("$.[*].order").value(hasItem(DEFAULT_ORDER)));
     }
 
     @Test
@@ -252,7 +280,8 @@ class BillPositionResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(billPosition.getId().intValue()))
             .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
-            .andExpect(jsonPath("$.cost").value(DEFAULT_COST.doubleValue()));
+            .andExpect(jsonPath("$.cost").value(DEFAULT_COST.doubleValue()))
+            .andExpect(jsonPath("$.order").value(DEFAULT_ORDER));
     }
 
     @Test
@@ -274,7 +303,7 @@ class BillPositionResourceIT {
         BillPosition updatedBillPosition = billPositionRepository.findById(billPosition.getId()).get();
         // Disconnect from session so that the updates on updatedBillPosition are not directly saved in db
         em.detach(updatedBillPosition);
-        updatedBillPosition.title(UPDATED_TITLE).cost(UPDATED_COST);
+        updatedBillPosition.title(UPDATED_TITLE).cost(UPDATED_COST).order(UPDATED_ORDER);
         BillPositionDTO billPositionDTO = billPositionMapper.toDto(updatedBillPosition);
 
         restBillPositionMockMvc
@@ -292,6 +321,7 @@ class BillPositionResourceIT {
         BillPosition testBillPosition = billPositionList.get(billPositionList.size() - 1);
         assertThat(testBillPosition.getTitle()).isEqualTo(UPDATED_TITLE);
         assertThat(testBillPosition.getCost()).isEqualTo(UPDATED_COST);
+        assertThat(testBillPosition.getOrder()).isEqualTo(UPDATED_ORDER);
 
         // Validate the BillPosition in Elasticsearch
         verify(mockBillPositionSearchRepository).save(testBillPosition);
@@ -390,6 +420,8 @@ class BillPositionResourceIT {
         BillPosition partialUpdatedBillPosition = new BillPosition();
         partialUpdatedBillPosition.setId(billPosition.getId());
 
+        partialUpdatedBillPosition.order(UPDATED_ORDER);
+
         restBillPositionMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedBillPosition.getId())
@@ -405,6 +437,7 @@ class BillPositionResourceIT {
         BillPosition testBillPosition = billPositionList.get(billPositionList.size() - 1);
         assertThat(testBillPosition.getTitle()).isEqualTo(DEFAULT_TITLE);
         assertThat(testBillPosition.getCost()).isEqualTo(DEFAULT_COST);
+        assertThat(testBillPosition.getOrder()).isEqualTo(UPDATED_ORDER);
     }
 
     @Test
@@ -419,7 +452,7 @@ class BillPositionResourceIT {
         BillPosition partialUpdatedBillPosition = new BillPosition();
         partialUpdatedBillPosition.setId(billPosition.getId());
 
-        partialUpdatedBillPosition.title(UPDATED_TITLE).cost(UPDATED_COST);
+        partialUpdatedBillPosition.title(UPDATED_TITLE).cost(UPDATED_COST).order(UPDATED_ORDER);
 
         restBillPositionMockMvc
             .perform(
@@ -436,6 +469,7 @@ class BillPositionResourceIT {
         BillPosition testBillPosition = billPositionList.get(billPositionList.size() - 1);
         assertThat(testBillPosition.getTitle()).isEqualTo(UPDATED_TITLE);
         assertThat(testBillPosition.getCost()).isEqualTo(UPDATED_COST);
+        assertThat(testBillPosition.getOrder()).isEqualTo(UPDATED_ORDER);
     }
 
     @Test
@@ -556,6 +590,7 @@ class BillPositionResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(billPosition.getId().intValue())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
-            .andExpect(jsonPath("$.[*].cost").value(hasItem(DEFAULT_COST.doubleValue())));
+            .andExpect(jsonPath("$.[*].cost").value(hasItem(DEFAULT_COST.doubleValue())))
+            .andExpect(jsonPath("$.[*].order").value(hasItem(DEFAULT_ORDER)));
     }
 }

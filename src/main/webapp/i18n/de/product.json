@@ -23,8 +23,7 @@
       "scannerId": "Scanner Id",
       "usualDurationFromBuyTillExpire": "Usual Duration From Buy Till Expire",
       "expireMeansBad": "Expire Means Bad",
-      "y": "Y",
-      "h": "H"
+      "defaultPrice": "Default Price"
     }
   }
 }

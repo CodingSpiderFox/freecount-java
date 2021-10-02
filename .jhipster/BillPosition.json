@@ -9,6 +9,11 @@
       "fieldName": "cost",
       "fieldType": "Double",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "order",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
     }
   ],
   "relationships": [

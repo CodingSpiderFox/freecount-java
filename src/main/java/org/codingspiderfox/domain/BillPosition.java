@@ -32,6 +32,10 @@ public class BillPosition implements Serializable {
     @Column(name = "cost", nullable = false)
     private Double cost;
 
+    @NotNull
+    @Column(name = "jhi_order", nullable = false)
+    private Integer order;
+
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties(value = { "project" }, allowSetters = true)
@@ -78,6 +82,19 @@ public class BillPosition implements Serializable {
         this.cost = cost;
     }
 
+    public Integer getOrder() {
+        return this.order;
+    }
+
+    public BillPosition order(Integer order) {
+        this.setOrder(order);
+        return this;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
     public Bill getBill() {
         return this.bill;
     }
@@ -117,6 +134,7 @@ public class BillPosition implements Serializable {
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
             ", cost=" + getCost() +
+            ", order=" + getOrder() +
             "}";
     }
 }

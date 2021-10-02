@@ -58,17 +58,11 @@ export const ProductDetail = (props: RouteComponentProps<{ id: string }>) => {
           </dt>
           <dd>{productEntity.expireMeansBad ? 'true' : 'false'}</dd>
           <dt>
-            <span id="y">
-              <Translate contentKey="freecountApp.product.y">Y</Translate>
+            <span id="defaultPrice">
+              <Translate contentKey="freecountApp.product.defaultPrice">Default Price</Translate>
             </span>
           </dt>
-          <dd>{productEntity.y}</dd>
-          <dt>
-            <span id="h">
-              <Translate contentKey="freecountApp.product.h">H</Translate>
-            </span>
-          </dt>
-          <dd>{productEntity.h}</dd>
+          <dd>{productEntity.defaultPrice}</dd>
         </dl>
         <Button tag={Link} to="/product" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

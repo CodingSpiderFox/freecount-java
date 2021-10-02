@@ -21,6 +21,7 @@
       "id": "ID",
       "title": "Title",
       "cost": "Cost",
+      "order": "Order",
       "bill": "Bill"
     }
   }

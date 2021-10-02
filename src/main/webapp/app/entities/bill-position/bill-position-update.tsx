@@ -110,6 +110,17 @@ export const BillPositionUpdate = (props: RouteComponentProps<{ id: string }>) =
                 }}
               />
               <ValidatedField
+                label={translate('freecountApp.billPosition.order')}
+                id="bill-position-order"
+                name="order"
+                data-cy="order"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
+              <ValidatedField
                 id="bill-position-bill"
                 name="billId"
                 data-cy="bill"

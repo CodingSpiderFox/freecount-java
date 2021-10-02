@@ -112,9 +112,7 @@ describe('Product e2e test', () => {
     cy.get(`[data-cy="expireMeansBad"]`).should('not.be.checked');
     cy.get(`[data-cy="expireMeansBad"]`).click().should('be.checked');
 
-    cy.get(`[data-cy="y"]`).type('Awesome overriding programming').should('have.value', 'Awesome overriding programming');
-
-    cy.get(`[data-cy="h"]`).type('Kina Incredible Customer').should('have.value', 'Kina Incredible Customer');
+    cy.get(`[data-cy="defaultPrice"]`).type('75092').should('have.value', '75092');
 
     cy.get(entityCreateSaveButtonSelector).click({ force: true });
     cy.scrollTo('top', { ensureScrollable: false });

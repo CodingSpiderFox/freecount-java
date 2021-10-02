@@ -39,11 +39,9 @@ public class Product implements Serializable {
     @Column(name = "expire_means_bad")
     private Boolean expireMeansBad;
 
-    @Column(name = "y")
-    private String y;
-
-    @Column(name = "h")
-    private String h;
+    @NotNull
+    @Column(name = "default_price", nullable = false)
+    private Double defaultPrice;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -112,30 +110,17 @@ public class Product implements Serializable {
         this.expireMeansBad = expireMeansBad;
     }
 
-    public String getY() {
-        return this.y;
+    public Double getDefaultPrice() {
+        return this.defaultPrice;
     }
 
-    public Product y(String y) {
-        this.setY(y);
+    public Product defaultPrice(Double defaultPrice) {
+        this.setDefaultPrice(defaultPrice);
         return this;
     }
 
-    public void setY(String y) {
-        this.y = y;
-    }
-
-    public String getH() {
-        return this.h;
-    }
-
-    public Product h(String h) {
-        this.setH(h);
-        return this;
-    }
-
-    public void setH(String h) {
-        this.h = h;
+    public void setDefaultPrice(Double defaultPrice) {
+        this.defaultPrice = defaultPrice;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -166,8 +151,7 @@ public class Product implements Serializable {
             ", scannerId='" + getScannerId() + "'" +
             ", usualDurationFromBuyTillExpire='" + getUsualDurationFromBuyTillExpire() + "'" +
             ", expireMeansBad='" + getExpireMeansBad() + "'" +
-            ", y='" + getY() + "'" +
-            ", h='" + getH() + "'" +
+            ", defaultPrice=" + getDefaultPrice() +
             "}";
     }
 }

@@ -208,11 +208,8 @@ export const Product = (props: RouteComponentProps<{ url: string }>) => {
                   <th className="hand" onClick={sort('expireMeansBad')}>
                     <Translate contentKey="freecountApp.product.expireMeansBad">Expire Means Bad</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th className="hand" onClick={sort('y')}>
-                    <Translate contentKey="freecountApp.product.y">Y</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('h')}>
-                    <Translate contentKey="freecountApp.product.h">H</Translate> <FontAwesomeIcon icon="sort" />
+                  <th className="hand" onClick={sort('defaultPrice')}>
+                    <Translate contentKey="freecountApp.product.defaultPrice">Default Price</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
                   <th />
                 </tr>
@@ -231,8 +228,7 @@ export const Product = (props: RouteComponentProps<{ url: string }>) => {
                       {product.usualDurationFromBuyTillExpire ? <DurationFormat value={product.usualDurationFromBuyTillExpire} /> : null}
                     </td>
                     <td>{product.expireMeansBad ? 'true' : 'false'}</td>
-                    <td>{product.y}</td>
-                    <td>{product.h}</td>
+                    <td>{product.defaultPrice}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${product.id}`} color="info" size="sm" data-cy="entityDetailsButton">

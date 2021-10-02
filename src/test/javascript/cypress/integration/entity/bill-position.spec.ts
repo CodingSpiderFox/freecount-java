@@ -107,6 +107,8 @@ describe('BillPosition e2e test', () => {
 
     cy.get(`[data-cy="cost"]`).type('89668').should('have.value', '89668');
 
+    cy.get(`[data-cy="order"]`).type('63190').should('have.value', '63190');
+
     cy.setFieldSelectToLastOfEntity('bill');
 
     cy.get(entityCreateSaveButtonSelector).click({ force: true });

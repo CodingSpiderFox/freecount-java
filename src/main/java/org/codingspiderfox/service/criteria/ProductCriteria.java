@@ -35,9 +35,7 @@ public class ProductCriteria implements Serializable, Criteria {
 
     private BooleanFilter expireMeansBad;
 
-    private StringFilter y;
-
-    private StringFilter h;
+    private DoubleFilter defaultPrice;
 
     private Boolean distinct;
 
@@ -50,8 +48,7 @@ public class ProductCriteria implements Serializable, Criteria {
         this.usualDurationFromBuyTillExpire =
             other.usualDurationFromBuyTillExpire == null ? null : other.usualDurationFromBuyTillExpire.copy();
         this.expireMeansBad = other.expireMeansBad == null ? null : other.expireMeansBad.copy();
-        this.y = other.y == null ? null : other.y.copy();
-        this.h = other.h == null ? null : other.h.copy();
+        this.defaultPrice = other.defaultPrice == null ? null : other.defaultPrice.copy();
         this.distinct = other.distinct;
     }
 
@@ -135,34 +132,19 @@ public class ProductCriteria implements Serializable, Criteria {
         this.expireMeansBad = expireMeansBad;
     }
 
-    public StringFilter getY() {
-        return y;
+    public DoubleFilter getDefaultPrice() {
+        return defaultPrice;
     }
 
-    public StringFilter y() {
-        if (y == null) {
-            y = new StringFilter();
+    public DoubleFilter defaultPrice() {
+        if (defaultPrice == null) {
+            defaultPrice = new DoubleFilter();
         }
-        return y;
+        return defaultPrice;
     }
 
-    public void setY(StringFilter y) {
-        this.y = y;
-    }
-
-    public StringFilter getH() {
-        return h;
-    }
-
-    public StringFilter h() {
-        if (h == null) {
-            h = new StringFilter();
-        }
-        return h;
-    }
-
-    public void setH(StringFilter h) {
-        this.h = h;
+    public void setDefaultPrice(DoubleFilter defaultPrice) {
+        this.defaultPrice = defaultPrice;
     }
 
     public Boolean getDistinct() {
@@ -188,15 +170,14 @@ public class ProductCriteria implements Serializable, Criteria {
             Objects.equals(scannerId, that.scannerId) &&
             Objects.equals(usualDurationFromBuyTillExpire, that.usualDurationFromBuyTillExpire) &&
             Objects.equals(expireMeansBad, that.expireMeansBad) &&
-            Objects.equals(y, that.y) &&
-            Objects.equals(h, that.h) &&
+            Objects.equals(defaultPrice, that.defaultPrice) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, scannerId, usualDurationFromBuyTillExpire, expireMeansBad, y, h, distinct);
+        return Objects.hash(id, title, scannerId, usualDurationFromBuyTillExpire, expireMeansBad, defaultPrice, distinct);
     }
 
     // prettier-ignore
@@ -208,8 +189,7 @@ public class ProductCriteria implements Serializable, Criteria {
             (scannerId != null ? "scannerId=" + scannerId + ", " : "") +
             (usualDurationFromBuyTillExpire != null ? "usualDurationFromBuyTillExpire=" + usualDurationFromBuyTillExpire + ", " : "") +
             (expireMeansBad != null ? "expireMeansBad=" + expireMeansBad + ", " : "") +
-            (y != null ? "y=" + y + ", " : "") +
-            (h != null ? "h=" + h + ", " : "") +
+            (defaultPrice != null ? "defaultPrice=" + defaultPrice + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

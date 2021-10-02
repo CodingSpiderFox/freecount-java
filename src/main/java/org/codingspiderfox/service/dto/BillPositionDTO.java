@@ -17,6 +17,9 @@ public class BillPositionDTO implements Serializable {
     @NotNull
     private Double cost;
 
+    @NotNull
+    private Integer order;
+
     private BillDTO bill;
 
     public Long getId() {
@@ -41,6 +44,14 @@ public class BillPositionDTO implements Serializable {
 
     public void setCost(Double cost) {
         this.cost = cost;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 
     public BillDTO getBill() {
@@ -79,6 +90,7 @@ public class BillPositionDTO implements Serializable {
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
             ", cost=" + getCost() +
+            ", order=" + getOrder() +
             ", bill=" + getBill() +
             "}";
     }

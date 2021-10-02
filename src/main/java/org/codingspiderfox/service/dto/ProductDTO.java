@@ -23,9 +23,8 @@ public class ProductDTO implements Serializable {
 
     private Boolean expireMeansBad;
 
-    private String y;
-
-    private String h;
+    @NotNull
+    private Double defaultPrice;
 
     public Long getId() {
         return id;
@@ -67,20 +66,12 @@ public class ProductDTO implements Serializable {
         this.expireMeansBad = expireMeansBad;
     }
 
-    public String getY() {
-        return y;
+    public Double getDefaultPrice() {
+        return defaultPrice;
     }
 
-    public void setY(String y) {
-        this.y = y;
-    }
-
-    public String getH() {
-        return h;
-    }
-
-    public void setH(String h) {
-        this.h = h;
+    public void setDefaultPrice(Double defaultPrice) {
+        this.defaultPrice = defaultPrice;
     }
 
     @Override
@@ -113,8 +104,7 @@ public class ProductDTO implements Serializable {
             ", scannerId='" + getScannerId() + "'" +
             ", usualDurationFromBuyTillExpire='" + getUsualDurationFromBuyTillExpire() + "'" +
             ", expireMeansBad='" + getExpireMeansBad() + "'" +
-            ", y='" + getY() + "'" +
-            ", h='" + getH() + "'" +
+            ", defaultPrice=" + getDefaultPrice() +
             "}";
     }
 }

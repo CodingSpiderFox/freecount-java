@@ -197,6 +197,9 @@ export const BillPosition = (props: RouteComponentProps<{ url: string }>) => {
                   <th className="hand" onClick={sort('cost')}>
                     <Translate contentKey="freecountApp.billPosition.cost">Cost</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
+                  <th className="hand" onClick={sort('order')}>
+                    <Translate contentKey="freecountApp.billPosition.order">Order</Translate> <FontAwesomeIcon icon="sort" />
+                  </th>
                   <th>
                     <Translate contentKey="freecountApp.billPosition.bill">Bill</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -213,6 +216,7 @@ export const BillPosition = (props: RouteComponentProps<{ url: string }>) => {
                     </td>
                     <td>{billPosition.title}</td>
                     <td>{billPosition.cost}</td>
+                    <td>{billPosition.order}</td>
                     <td>{billPosition.bill ? <Link to={`bill/${billPosition.bill.id}`}>{billPosition.bill.id}</Link> : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">

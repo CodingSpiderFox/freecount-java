@@ -119,8 +119,17 @@ export const ProductUpdate = (props: RouteComponentProps<{ id: string }>) => {
                 check
                 type="checkbox"
               />
-              <ValidatedField label={translate('freecountApp.product.y')} id="product-y" name="y" data-cy="y" type="text" />
-              <ValidatedField label={translate('freecountApp.product.h')} id="product-h" name="h" data-cy="h" type="text" />
+              <ValidatedField
+                label={translate('freecountApp.product.defaultPrice')}
+                id="product-defaultPrice"
+                name="defaultPrice"
+                data-cy="defaultPrice"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/product" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

@@ -20,12 +20,9 @@
       "fieldType": "Boolean"
     },
     {
-      "fieldName": "y",
-      "fieldType": "String"
-    },
-    {
-      "fieldName": "h",
-      "fieldType": "String"
+      "fieldName": "defaultPrice",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
     }
   ],
   "relationships": [],

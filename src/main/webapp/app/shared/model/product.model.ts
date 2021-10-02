@@ -4,8 +4,7 @@ export interface IProduct {
   scannerId?: string;
   usualDurationFromBuyTillExpire?: string;
   expireMeansBad?: boolean | null;
-  y?: string | null;
-  h?: string | null;
+  defaultPrice?: number;
 }
 
 export const defaultValue: Readonly<IProduct> = {

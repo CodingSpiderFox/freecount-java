@@ -42,6 +42,12 @@ export const BillPositionDetail = (props: RouteComponentProps<{ id: string }>) =
           </dt>
           <dd>{billPositionEntity.cost}</dd>
           <dt>
+            <span id="order">
+              <Translate contentKey="freecountApp.billPosition.order">Order</Translate>
+            </span>
+          </dt>
+          <dd>{billPositionEntity.order}</dd>
+          <dt>
             <Translate contentKey="freecountApp.billPosition.bill">Bill</Translate>
           </dt>
           <dd>{billPositionEntity.bill ? billPositionEntity.bill.id : ''}</dd>

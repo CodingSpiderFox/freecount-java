@@ -113,11 +113,8 @@ public class ProductQueryService extends QueryService<Product> {
             if (criteria.getExpireMeansBad() != null) {
                 specification = specification.and(buildSpecification(criteria.getExpireMeansBad(), Product_.expireMeansBad));
             }
-            if (criteria.getY() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getY(), Product_.y));
-            }
-            if (criteria.getH() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getH(), Product_.h));
+            if (criteria.getDefaultPrice() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getDefaultPrice(), Product_.defaultPrice));
             }
         }
         return specification;

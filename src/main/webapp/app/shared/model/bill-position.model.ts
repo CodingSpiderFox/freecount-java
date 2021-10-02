@@ -4,6 +4,7 @@ export interface IBillPosition {
   id?: number;
   title?: string;
   cost?: number;
+  order?: number;
   bill?: IBill;
 }
 
