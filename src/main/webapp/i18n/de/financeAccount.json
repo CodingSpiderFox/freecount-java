@@ -1,0 +1,26 @@
+{
+  "freecountApp": {
+    "financeAccount": {
+      "home": {
+        "title": "Finance Accounts",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Finance Account erstellen",
+        "createOrEditLabel": "Finance Account erstellen oder bearbeiten",
+        "search": "Suche nach Finance Account",
+        "notFound": "Keine Finance Accounts gefunden"
+      },
+      "created": "Finance Account erstellt mit ID {{ param }}",
+      "updated": "Finance Account aktualisiert mit ID {{ param }}",
+      "deleted": "Finance Account gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Finance Account {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Finance Account"
+      },
+      "id": "ID",
+      "title": "Title",
+      "owner": "Owner"
+    }
+  }
+}

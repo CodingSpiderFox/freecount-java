@@ -20,6 +20,8 @@ import projectMember from 'app/entities/project-member/project-member.reducer';
 import product from 'app/entities/product/product.reducer';
 // prettier-ignore
 import stock from 'app/entities/stock/stock.reducer';
+// prettier-ignore
+import financeAccount from 'app/entities/finance-account/finance-account.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 const rootReducer = {
@@ -35,6 +37,7 @@ const rootReducer = {
   projectMember,
   product,
   stock,
+  financeAccount,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar,
 };
