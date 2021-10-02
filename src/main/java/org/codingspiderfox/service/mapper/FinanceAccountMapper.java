@@ -11,4 +11,10 @@ import org.mapstruct.*;
 public interface FinanceAccountMapper extends EntityMapper<FinanceAccountDTO, FinanceAccount> {
     @Mapping(target = "owner", source = "owner", qualifiedByName = "login")
     FinanceAccountDTO toDto(FinanceAccount s);
+
+    @Named("id")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "owner", source = "owner")
+    FinanceAccountDTO toDtoId(FinanceAccount financeAccount);
 }

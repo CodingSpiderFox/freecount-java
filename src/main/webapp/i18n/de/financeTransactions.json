@@ -1,0 +1,29 @@
+{
+  "freecountApp": {
+    "financeTransactions": {
+      "home": {
+        "title": "Finance Transactions",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Finance Transactions erstellen",
+        "createOrEditLabel": "Finance Transactions erstellen oder bearbeiten",
+        "search": "Suche nach Finance Transactions",
+        "notFound": "Keine Finance Transactions gefunden"
+      },
+      "created": "Finance Transactions erstellt mit ID {{ param }}",
+      "updated": "Finance Transactions aktualisiert mit ID {{ param }}",
+      "deleted": "Finance Transactions gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Finance Transactions {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Finance Transactions"
+      },
+      "id": "ID",
+      "executionTimestamp": "Execution Timestamp",
+      "amountAddedToDestinationAccount": "Amount Added To Destination Account",
+      "comment": "Comment",
+      "destinationAccount": "Destination Account",
+      "referenceAccount": "Reference Account"
+    }
+  }
+}
