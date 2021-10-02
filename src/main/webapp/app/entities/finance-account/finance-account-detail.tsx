@@ -36,6 +36,12 @@ export const FinanceAccountDetail = (props: RouteComponentProps<{ id: string }>)
           </dt>
           <dd>{financeAccountEntity.title}</dd>
           <dt>
+            <span id="currentBalance">
+              <Translate contentKey="freecountApp.financeAccount.currentBalance">Current Balance</Translate>
+            </span>
+          </dt>
+          <dd>{financeAccountEntity.currentBalance}</dd>
+          <dt>
             <Translate contentKey="freecountApp.financeAccount.owner">Owner</Translate>
           </dt>
           <dd>{financeAccountEntity.owner ? financeAccountEntity.owner.login : ''}</dd>

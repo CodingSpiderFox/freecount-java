@@ -101,6 +101,9 @@ public class FinanceAccountQueryService extends QueryService<FinanceAccount> {
             if (criteria.getTitle() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getTitle(), FinanceAccount_.title));
             }
+            if (criteria.getCurrentBalance() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getCurrentBalance(), FinanceAccount_.currentBalance));
+            }
             if (criteria.getOwnerId() != null) {
                 specification =
                     specification.and(

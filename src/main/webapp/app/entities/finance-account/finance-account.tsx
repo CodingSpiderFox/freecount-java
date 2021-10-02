@@ -194,6 +194,10 @@ export const FinanceAccount = (props: RouteComponentProps<{ url: string }>) => {
                   <th className="hand" onClick={sort('title')}>
                     <Translate contentKey="freecountApp.financeAccount.title">Title</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
+                  <th className="hand" onClick={sort('currentBalance')}>
+                    <Translate contentKey="freecountApp.financeAccount.currentBalance">Current Balance</Translate>{' '}
+                    <FontAwesomeIcon icon="sort" />
+                  </th>
                   <th>
                     <Translate contentKey="freecountApp.financeAccount.owner">Owner</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -209,6 +213,7 @@ export const FinanceAccount = (props: RouteComponentProps<{ url: string }>) => {
                       </Button>
                     </td>
                     <td>{financeAccount.title}</td>
+                    <td>{financeAccount.currentBalance}</td>
                     <td>{financeAccount.owner ? financeAccount.owner.login : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">

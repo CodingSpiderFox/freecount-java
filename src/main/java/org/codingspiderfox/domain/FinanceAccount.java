@@ -25,6 +25,10 @@ public class FinanceAccount implements Serializable {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @NotNull
+    @Column(name = "current_balance", nullable = false)
+    private Double currentBalance;
+
     @OneToOne(optional = false)
     @NotNull
     @MapsId
@@ -57,6 +61,19 @@ public class FinanceAccount implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Double getCurrentBalance() {
+        return this.currentBalance;
+    }
+
+    public FinanceAccount currentBalance(Double currentBalance) {
+        this.setCurrentBalance(currentBalance);
+        return this;
+    }
+
+    public void setCurrentBalance(Double currentBalance) {
+        this.currentBalance = currentBalance;
     }
 
     public User getOwner() {
@@ -97,6 +114,7 @@ public class FinanceAccount implements Serializable {
         return "FinanceAccount{" +
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
+            ", currentBalance=" + getCurrentBalance() +
             "}";
     }
 }

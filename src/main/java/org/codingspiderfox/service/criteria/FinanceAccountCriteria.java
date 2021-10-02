@@ -28,6 +28,8 @@ public class FinanceAccountCriteria implements Serializable, Criteria {
 
     private StringFilter title;
 
+    private DoubleFilter currentBalance;
+
     private StringFilter ownerId;
 
     private Boolean distinct;
@@ -37,6 +39,7 @@ public class FinanceAccountCriteria implements Serializable, Criteria {
     public FinanceAccountCriteria(FinanceAccountCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
         this.title = other.title == null ? null : other.title.copy();
+        this.currentBalance = other.currentBalance == null ? null : other.currentBalance.copy();
         this.ownerId = other.ownerId == null ? null : other.ownerId.copy();
         this.distinct = other.distinct;
     }
@@ -76,6 +79,21 @@ public class FinanceAccountCriteria implements Serializable, Criteria {
         this.title = title;
     }
 
+    public DoubleFilter getCurrentBalance() {
+        return currentBalance;
+    }
+
+    public DoubleFilter currentBalance() {
+        if (currentBalance == null) {
+            currentBalance = new DoubleFilter();
+        }
+        return currentBalance;
+    }
+
+    public void setCurrentBalance(DoubleFilter currentBalance) {
+        this.currentBalance = currentBalance;
+    }
+
     public StringFilter getOwnerId() {
         return ownerId;
     }
@@ -111,6 +129,7 @@ public class FinanceAccountCriteria implements Serializable, Criteria {
         return (
             Objects.equals(id, that.id) &&
             Objects.equals(title, that.title) &&
+            Objects.equals(currentBalance, that.currentBalance) &&
             Objects.equals(ownerId, that.ownerId) &&
             Objects.equals(distinct, that.distinct)
         );
@@ -118,7 +137,7 @@ public class FinanceAccountCriteria implements Serializable, Criteria {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, ownerId, distinct);
+        return Objects.hash(id, title, currentBalance, ownerId, distinct);
     }
 
     // prettier-ignore
@@ -127,6 +146,7 @@ public class FinanceAccountCriteria implements Serializable, Criteria {
         return "FinanceAccountCriteria{" +
             (id != null ? "id=" + id + ", " : "") +
             (title != null ? "title=" + title + ", " : "") +
+            (currentBalance != null ? "currentBalance=" + currentBalance + ", " : "") +
             (ownerId != null ? "ownerId=" + ownerId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";

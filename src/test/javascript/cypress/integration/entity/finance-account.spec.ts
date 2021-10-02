@@ -105,6 +105,8 @@ describe('FinanceAccount e2e test', () => {
 
     cy.get(`[data-cy="title"]`).type('system').should('have.value', 'system');
 
+    cy.get(`[data-cy="currentBalance"]`).type('98539').should('have.value', '98539');
+
     cy.setFieldSelectToLastOfEntity('owner');
 
     cy.get(entityCreateSaveButtonSelector).click({ force: true });

@@ -45,6 +45,10 @@ class FinanceAccountResourceIT {
     private static final String DEFAULT_TITLE = "AAAAAAAAAA";
     private static final String UPDATED_TITLE = "BBBBBBBBBB";
 
+    private static final Double DEFAULT_CURRENT_BALANCE = 1D;
+    private static final Double UPDATED_CURRENT_BALANCE = 2D;
+    private static final Double SMALLER_CURRENT_BALANCE = 1D - 1D;
+
     private static final String ENTITY_API_URL = "/api/finance-accounts";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
     private static final String ENTITY_SEARCH_API_URL = "/api/_search/finance-accounts";
@@ -78,7 +82,7 @@ class FinanceAccountResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static FinanceAccount createEntity(EntityManager em) {
-        FinanceAccount financeAccount = new FinanceAccount().title(DEFAULT_TITLE);
+        FinanceAccount financeAccount = new FinanceAccount().title(DEFAULT_TITLE).currentBalance(DEFAULT_CURRENT_BALANCE);
         // Add required entity
         User user = UserResourceIT.createEntity(em);
         em.persist(user);
@@ -94,7 +98,7 @@ class FinanceAccountResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static FinanceAccount createUpdatedEntity(EntityManager em) {
-        FinanceAccount financeAccount = new FinanceAccount().title(UPDATED_TITLE);
+        FinanceAccount financeAccount = new FinanceAccount().title(UPDATED_TITLE).currentBalance(UPDATED_CURRENT_BALANCE);
         // Add required entity
         User user = UserResourceIT.createEntity(em);
         em.persist(user);
@@ -128,6 +132,7 @@ class FinanceAccountResourceIT {
         assertThat(financeAccountList).hasSize(databaseSizeBeforeCreate + 1);
         FinanceAccount testFinanceAccount = financeAccountList.get(financeAccountList.size() - 1);
         assertThat(testFinanceAccount.getTitle()).isEqualTo(DEFAULT_TITLE);
+        assertThat(testFinanceAccount.getCurrentBalance()).isEqualTo(DEFAULT_CURRENT_BALANCE);
 
         // Validate the id for MapsId, the ids must be same
         assertThat(testFinanceAccount.getId()).isEqualTo(testFinanceAccount.getUser().getId());
@@ -235,6 +240,29 @@ class FinanceAccountResourceIT {
 
     @Test
     @Transactional
+    void checkCurrentBalanceIsRequired() throws Exception {
+        int databaseSizeBeforeTest = financeAccountRepository.findAll().size();
+        // set the field null
+        financeAccount.setCurrentBalance(null);
+
+        // Create the FinanceAccount, which fails.
+        FinanceAccountDTO financeAccountDTO = financeAccountMapper.toDto(financeAccount);
+
+        restFinanceAccountMockMvc
+            .perform(
+                post(ENTITY_API_URL)
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtil.convertObjectToJsonBytes(financeAccountDTO))
+            )
+            .andExpect(status().isBadRequest());
+
+        List<FinanceAccount> financeAccountList = financeAccountRepository.findAll();
+        assertThat(financeAccountList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     void getAllFinanceAccounts() throws Exception {
         // Initialize the database
         financeAccountRepository.saveAndFlush(financeAccount);
@@ -245,7 +273,8 @@ class FinanceAccountResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(financeAccount.getId())))
-            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)));
+            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
+            .andExpect(jsonPath("$.[*].currentBalance").value(hasItem(DEFAULT_CURRENT_BALANCE.doubleValue())));
     }
 
     @Test
@@ -260,7 +289,8 @@ class FinanceAccountResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(financeAccount.getId()))
-            .andExpect(jsonPath("$.title").value(DEFAULT_TITLE));
+            .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
+            .andExpect(jsonPath("$.currentBalance").value(DEFAULT_CURRENT_BALANCE.doubleValue()));
     }
 
     @Test
@@ -355,6 +385,110 @@ class FinanceAccountResourceIT {
 
     @Test
     @Transactional
+    void getAllFinanceAccountsByCurrentBalanceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        financeAccountRepository.saveAndFlush(financeAccount);
+
+        // Get all the financeAccountList where currentBalance equals to DEFAULT_CURRENT_BALANCE
+        defaultFinanceAccountShouldBeFound("currentBalance.equals=" + DEFAULT_CURRENT_BALANCE);
+
+        // Get all the financeAccountList where currentBalance equals to UPDATED_CURRENT_BALANCE
+        defaultFinanceAccountShouldNotBeFound("currentBalance.equals=" + UPDATED_CURRENT_BALANCE);
+    }
+
+    @Test
+    @Transactional
+    void getAllFinanceAccountsByCurrentBalanceIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        financeAccountRepository.saveAndFlush(financeAccount);
+
+        // Get all the financeAccountList where currentBalance not equals to DEFAULT_CURRENT_BALANCE
+        defaultFinanceAccountShouldNotBeFound("currentBalance.notEquals=" + DEFAULT_CURRENT_BALANCE);
+
+        // Get all the financeAccountList where currentBalance not equals to UPDATED_CURRENT_BALANCE
+        defaultFinanceAccountShouldBeFound("currentBalance.notEquals=" + UPDATED_CURRENT_BALANCE);
+    }
+
+    @Test
+    @Transactional
+    void getAllFinanceAccountsByCurrentBalanceIsInShouldWork() throws Exception {
+        // Initialize the database
+        financeAccountRepository.saveAndFlush(financeAccount);
+
+        // Get all the financeAccountList where currentBalance in DEFAULT_CURRENT_BALANCE or UPDATED_CURRENT_BALANCE
+        defaultFinanceAccountShouldBeFound("currentBalance.in=" + DEFAULT_CURRENT_BALANCE + "," + UPDATED_CURRENT_BALANCE);
+
+        // Get all the financeAccountList where currentBalance equals to UPDATED_CURRENT_BALANCE
+        defaultFinanceAccountShouldNotBeFound("currentBalance.in=" + UPDATED_CURRENT_BALANCE);
+    }
+
+    @Test
+    @Transactional
+    void getAllFinanceAccountsByCurrentBalanceIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        financeAccountRepository.saveAndFlush(financeAccount);
+
+        // Get all the financeAccountList where currentBalance is not null
+        defaultFinanceAccountShouldBeFound("currentBalance.specified=true");
+
+        // Get all the financeAccountList where currentBalance is null
+        defaultFinanceAccountShouldNotBeFound("currentBalance.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllFinanceAccountsByCurrentBalanceIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        financeAccountRepository.saveAndFlush(financeAccount);
+
+        // Get all the financeAccountList where currentBalance is greater than or equal to DEFAULT_CURRENT_BALANCE
+        defaultFinanceAccountShouldBeFound("currentBalance.greaterThanOrEqual=" + DEFAULT_CURRENT_BALANCE);
+
+        // Get all the financeAccountList where currentBalance is greater than or equal to UPDATED_CURRENT_BALANCE
+        defaultFinanceAccountShouldNotBeFound("currentBalance.greaterThanOrEqual=" + UPDATED_CURRENT_BALANCE);
+    }
+
+    @Test
+    @Transactional
+    void getAllFinanceAccountsByCurrentBalanceIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        financeAccountRepository.saveAndFlush(financeAccount);
+
+        // Get all the financeAccountList where currentBalance is less than or equal to DEFAULT_CURRENT_BALANCE
+        defaultFinanceAccountShouldBeFound("currentBalance.lessThanOrEqual=" + DEFAULT_CURRENT_BALANCE);
+
+        // Get all the financeAccountList where currentBalance is less than or equal to SMALLER_CURRENT_BALANCE
+        defaultFinanceAccountShouldNotBeFound("currentBalance.lessThanOrEqual=" + SMALLER_CURRENT_BALANCE);
+    }
+
+    @Test
+    @Transactional
+    void getAllFinanceAccountsByCurrentBalanceIsLessThanSomething() throws Exception {
+        // Initialize the database
+        financeAccountRepository.saveAndFlush(financeAccount);
+
+        // Get all the financeAccountList where currentBalance is less than DEFAULT_CURRENT_BALANCE
+        defaultFinanceAccountShouldNotBeFound("currentBalance.lessThan=" + DEFAULT_CURRENT_BALANCE);
+
+        // Get all the financeAccountList where currentBalance is less than UPDATED_CURRENT_BALANCE
+        defaultFinanceAccountShouldBeFound("currentBalance.lessThan=" + UPDATED_CURRENT_BALANCE);
+    }
+
+    @Test
+    @Transactional
+    void getAllFinanceAccountsByCurrentBalanceIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        financeAccountRepository.saveAndFlush(financeAccount);
+
+        // Get all the financeAccountList where currentBalance is greater than DEFAULT_CURRENT_BALANCE
+        defaultFinanceAccountShouldNotBeFound("currentBalance.greaterThan=" + DEFAULT_CURRENT_BALANCE);
+
+        // Get all the financeAccountList where currentBalance is greater than SMALLER_CURRENT_BALANCE
+        defaultFinanceAccountShouldBeFound("currentBalance.greaterThan=" + SMALLER_CURRENT_BALANCE);
+    }
+
+    @Test
+    @Transactional
     void getAllFinanceAccountsByOwnerIsEqualToSomething() throws Exception {
         // Get already existing entity
         User owner = financeAccount.getOwner();
@@ -377,7 +511,8 @@ class FinanceAccountResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(financeAccount.getId())))
-            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)));
+            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
+            .andExpect(jsonPath("$.[*].currentBalance").value(hasItem(DEFAULT_CURRENT_BALANCE.doubleValue())));
 
         // Check, that the count call also returns 1
         restFinanceAccountMockMvc
@@ -425,7 +560,7 @@ class FinanceAccountResourceIT {
         FinanceAccount updatedFinanceAccount = financeAccountRepository.findById(financeAccount.getId()).get();
         // Disconnect from session so that the updates on updatedFinanceAccount are not directly saved in db
         em.detach(updatedFinanceAccount);
-        updatedFinanceAccount.title(UPDATED_TITLE);
+        updatedFinanceAccount.title(UPDATED_TITLE).currentBalance(UPDATED_CURRENT_BALANCE);
         FinanceAccountDTO financeAccountDTO = financeAccountMapper.toDto(updatedFinanceAccount);
 
         restFinanceAccountMockMvc
@@ -442,6 +577,7 @@ class FinanceAccountResourceIT {
         assertThat(financeAccountList).hasSize(databaseSizeBeforeUpdate);
         FinanceAccount testFinanceAccount = financeAccountList.get(financeAccountList.size() - 1);
         assertThat(testFinanceAccount.getTitle()).isEqualTo(UPDATED_TITLE);
+        assertThat(testFinanceAccount.getCurrentBalance()).isEqualTo(UPDATED_CURRENT_BALANCE);
 
         // Validate the FinanceAccount in Elasticsearch
         verify(mockFinanceAccountSearchRepository).save(testFinanceAccount);
@@ -540,6 +676,8 @@ class FinanceAccountResourceIT {
         FinanceAccount partialUpdatedFinanceAccount = new FinanceAccount();
         partialUpdatedFinanceAccount.setId(financeAccount.getId());
 
+        partialUpdatedFinanceAccount.currentBalance(UPDATED_CURRENT_BALANCE);
+
         restFinanceAccountMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedFinanceAccount.getId())
@@ -554,6 +692,7 @@ class FinanceAccountResourceIT {
         assertThat(financeAccountList).hasSize(databaseSizeBeforeUpdate);
         FinanceAccount testFinanceAccount = financeAccountList.get(financeAccountList.size() - 1);
         assertThat(testFinanceAccount.getTitle()).isEqualTo(DEFAULT_TITLE);
+        assertThat(testFinanceAccount.getCurrentBalance()).isEqualTo(UPDATED_CURRENT_BALANCE);
     }
 
     @Test
@@ -568,7 +707,7 @@ class FinanceAccountResourceIT {
         FinanceAccount partialUpdatedFinanceAccount = new FinanceAccount();
         partialUpdatedFinanceAccount.setId(financeAccount.getId());
 
-        partialUpdatedFinanceAccount.title(UPDATED_TITLE);
+        partialUpdatedFinanceAccount.title(UPDATED_TITLE).currentBalance(UPDATED_CURRENT_BALANCE);
 
         restFinanceAccountMockMvc
             .perform(
@@ -584,6 +723,7 @@ class FinanceAccountResourceIT {
         assertThat(financeAccountList).hasSize(databaseSizeBeforeUpdate);
         FinanceAccount testFinanceAccount = financeAccountList.get(financeAccountList.size() - 1);
         assertThat(testFinanceAccount.getTitle()).isEqualTo(UPDATED_TITLE);
+        assertThat(testFinanceAccount.getCurrentBalance()).isEqualTo(UPDATED_CURRENT_BALANCE);
     }
 
     @Test
@@ -703,6 +843,7 @@ class FinanceAccountResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(financeAccount.getId())))
-            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)));
+            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
+            .andExpect(jsonPath("$.[*].currentBalance").value(hasItem(DEFAULT_CURRENT_BALANCE.doubleValue())));
     }
 }

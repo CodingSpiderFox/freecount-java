@@ -14,6 +14,9 @@ public class FinanceAccountDTO implements Serializable {
     @NotNull
     private String title;
 
+    @NotNull
+    private Double currentBalance;
+
     private UserDTO owner;
 
     public String getId() {
@@ -30,6 +33,14 @@ public class FinanceAccountDTO implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Double getCurrentBalance() {
+        return currentBalance;
+    }
+
+    public void setCurrentBalance(Double currentBalance) {
+        this.currentBalance = currentBalance;
     }
 
     public UserDTO getOwner() {
@@ -67,6 +78,7 @@ public class FinanceAccountDTO implements Serializable {
         return "FinanceAccountDTO{" +
             "id='" + getId() + "'" +
             ", title='" + getTitle() + "'" +
+            ", currentBalance=" + getCurrentBalance() +
             ", owner=" + getOwner() +
             "}";
     }

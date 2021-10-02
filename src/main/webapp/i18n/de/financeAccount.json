@@ -20,6 +20,7 @@
       },
       "id": "ID",
       "title": "Title",
+      "currentBalance": "Current Balance",
       "owner": "Owner"
     }
   }

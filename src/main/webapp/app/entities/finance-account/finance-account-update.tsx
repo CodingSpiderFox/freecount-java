@@ -99,6 +99,17 @@ export const FinanceAccountUpdate = (props: RouteComponentProps<{ id: string }>)
                 }}
               />
               <ValidatedField
+                label={translate('freecountApp.financeAccount.currentBalance')}
+                id="finance-account-currentBalance"
+                name="currentBalance"
+                data-cy="currentBalance"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
+              <ValidatedField
                 id="finance-account-owner"
                 name="ownerId"
                 data-cy="owner"
