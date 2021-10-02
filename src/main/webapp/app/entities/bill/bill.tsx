@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Input, InputGroup, FormGroup, Form, Col, Row, Table } from 'reactstrap';
-import { Translate, translate, getSortState } from 'react-jhipster';
+import { Translate, translate, TextFormat, getSortState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { searchEntities, getEntities, reset } from './bill.reducer';
@@ -194,6 +194,12 @@ export const Bill = (props: RouteComponentProps<{ url: string }>) => {
                   <th className="hand" onClick={sort('title')}>
                     <Translate contentKey="freecountApp.bill.title">Title</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
+                  <th className="hand" onClick={sort('closedTimestamp')}>
+                    <Translate contentKey="freecountApp.bill.closedTimestamp">Closed Timestamp</Translate> <FontAwesomeIcon icon="sort" />
+                  </th>
+                  <th className="hand" onClick={sort('finalAmount')}>
+                    <Translate contentKey="freecountApp.bill.finalAmount">Final Amount</Translate> <FontAwesomeIcon icon="sort" />
+                  </th>
                   <th>
                     <Translate contentKey="freecountApp.bill.project">Project</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -209,6 +215,10 @@ export const Bill = (props: RouteComponentProps<{ url: string }>) => {
                       </Button>
                     </td>
                     <td>{bill.title}</td>
+                    <td>
+                      {bill.closedTimestamp ? <TextFormat type="date" value={bill.closedTimestamp} format={APP_DATE_FORMAT} /> : null}
+                    </td>
+                    <td>{bill.finalAmount}</td>
                     <td>{bill.project ? <Link to={`project/${bill.project.id}`}>{bill.project.id}</Link> : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">

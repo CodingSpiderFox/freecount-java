@@ -1,12 +1,17 @@
 package org.codingspiderfox.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codingspiderfox.web.rest.TestUtil.sameInstant;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -46,6 +51,14 @@ class BillResourceIT {
     private static final String DEFAULT_TITLE = "AAAAAAAAAA";
     private static final String UPDATED_TITLE = "BBBBBBBBBB";
 
+    private static final ZonedDateTime DEFAULT_CLOSED_TIMESTAMP = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_CLOSED_TIMESTAMP = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final ZonedDateTime SMALLER_CLOSED_TIMESTAMP = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
+
+    private static final Double DEFAULT_FINAL_AMOUNT = 1D;
+    private static final Double UPDATED_FINAL_AMOUNT = 2D;
+    private static final Double SMALLER_FINAL_AMOUNT = 1D - 1D;
+
     private static final String ENTITY_API_URL = "/api/bills";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
     private static final String ENTITY_SEARCH_API_URL = "/api/_search/bills";
@@ -82,7 +95,7 @@ class BillResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Bill createEntity(EntityManager em) {
-        Bill bill = new Bill().title(DEFAULT_TITLE);
+        Bill bill = new Bill().title(DEFAULT_TITLE).closedTimestamp(DEFAULT_CLOSED_TIMESTAMP).finalAmount(DEFAULT_FINAL_AMOUNT);
         // Add required entity
         Project project;
         if (TestUtil.findAll(em, Project.class).isEmpty()) {
@@ -103,7 +116,7 @@ class BillResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Bill createUpdatedEntity(EntityManager em) {
-        Bill bill = new Bill().title(UPDATED_TITLE);
+        Bill bill = new Bill().title(UPDATED_TITLE).closedTimestamp(UPDATED_CLOSED_TIMESTAMP).finalAmount(UPDATED_FINAL_AMOUNT);
         // Add required entity
         Project project;
         if (TestUtil.findAll(em, Project.class).isEmpty()) {
@@ -142,6 +155,8 @@ class BillResourceIT {
         assertThat(billList).hasSize(databaseSizeBeforeCreate + 1);
         Bill testBill = billList.get(billList.size() - 1);
         assertThat(testBill.getTitle()).isEqualTo(DEFAULT_TITLE);
+        assertThat(testBill.getClosedTimestamp()).isEqualTo(DEFAULT_CLOSED_TIMESTAMP);
+        assertThat(testBill.getFinalAmount()).isEqualTo(DEFAULT_FINAL_AMOUNT);
 
         // Validate the Bill in Elasticsearch
         verify(mockBillSearchRepository, times(1)).save(testBill);
@@ -209,7 +224,9 @@ class BillResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(bill.getId().intValue())))
-            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)));
+            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
+            .andExpect(jsonPath("$.[*].closedTimestamp").value(hasItem(sameInstant(DEFAULT_CLOSED_TIMESTAMP))))
+            .andExpect(jsonPath("$.[*].finalAmount").value(hasItem(DEFAULT_FINAL_AMOUNT.doubleValue())));
     }
 
     @Test
@@ -224,7 +241,9 @@ class BillResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(bill.getId().intValue()))
-            .andExpect(jsonPath("$.title").value(DEFAULT_TITLE));
+            .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
+            .andExpect(jsonPath("$.closedTimestamp").value(sameInstant(DEFAULT_CLOSED_TIMESTAMP)))
+            .andExpect(jsonPath("$.finalAmount").value(DEFAULT_FINAL_AMOUNT.doubleValue()));
     }
 
     @Test
@@ -325,6 +344,214 @@ class BillResourceIT {
 
     @Test
     @Transactional
+    void getAllBillsByClosedTimestampIsEqualToSomething() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where closedTimestamp equals to DEFAULT_CLOSED_TIMESTAMP
+        defaultBillShouldBeFound("closedTimestamp.equals=" + DEFAULT_CLOSED_TIMESTAMP);
+
+        // Get all the billList where closedTimestamp equals to UPDATED_CLOSED_TIMESTAMP
+        defaultBillShouldNotBeFound("closedTimestamp.equals=" + UPDATED_CLOSED_TIMESTAMP);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByClosedTimestampIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where closedTimestamp not equals to DEFAULT_CLOSED_TIMESTAMP
+        defaultBillShouldNotBeFound("closedTimestamp.notEquals=" + DEFAULT_CLOSED_TIMESTAMP);
+
+        // Get all the billList where closedTimestamp not equals to UPDATED_CLOSED_TIMESTAMP
+        defaultBillShouldBeFound("closedTimestamp.notEquals=" + UPDATED_CLOSED_TIMESTAMP);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByClosedTimestampIsInShouldWork() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where closedTimestamp in DEFAULT_CLOSED_TIMESTAMP or UPDATED_CLOSED_TIMESTAMP
+        defaultBillShouldBeFound("closedTimestamp.in=" + DEFAULT_CLOSED_TIMESTAMP + "," + UPDATED_CLOSED_TIMESTAMP);
+
+        // Get all the billList where closedTimestamp equals to UPDATED_CLOSED_TIMESTAMP
+        defaultBillShouldNotBeFound("closedTimestamp.in=" + UPDATED_CLOSED_TIMESTAMP);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByClosedTimestampIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where closedTimestamp is not null
+        defaultBillShouldBeFound("closedTimestamp.specified=true");
+
+        // Get all the billList where closedTimestamp is null
+        defaultBillShouldNotBeFound("closedTimestamp.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByClosedTimestampIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where closedTimestamp is greater than or equal to DEFAULT_CLOSED_TIMESTAMP
+        defaultBillShouldBeFound("closedTimestamp.greaterThanOrEqual=" + DEFAULT_CLOSED_TIMESTAMP);
+
+        // Get all the billList where closedTimestamp is greater than or equal to UPDATED_CLOSED_TIMESTAMP
+        defaultBillShouldNotBeFound("closedTimestamp.greaterThanOrEqual=" + UPDATED_CLOSED_TIMESTAMP);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByClosedTimestampIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where closedTimestamp is less than or equal to DEFAULT_CLOSED_TIMESTAMP
+        defaultBillShouldBeFound("closedTimestamp.lessThanOrEqual=" + DEFAULT_CLOSED_TIMESTAMP);
+
+        // Get all the billList where closedTimestamp is less than or equal to SMALLER_CLOSED_TIMESTAMP
+        defaultBillShouldNotBeFound("closedTimestamp.lessThanOrEqual=" + SMALLER_CLOSED_TIMESTAMP);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByClosedTimestampIsLessThanSomething() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where closedTimestamp is less than DEFAULT_CLOSED_TIMESTAMP
+        defaultBillShouldNotBeFound("closedTimestamp.lessThan=" + DEFAULT_CLOSED_TIMESTAMP);
+
+        // Get all the billList where closedTimestamp is less than UPDATED_CLOSED_TIMESTAMP
+        defaultBillShouldBeFound("closedTimestamp.lessThan=" + UPDATED_CLOSED_TIMESTAMP);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByClosedTimestampIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where closedTimestamp is greater than DEFAULT_CLOSED_TIMESTAMP
+        defaultBillShouldNotBeFound("closedTimestamp.greaterThan=" + DEFAULT_CLOSED_TIMESTAMP);
+
+        // Get all the billList where closedTimestamp is greater than SMALLER_CLOSED_TIMESTAMP
+        defaultBillShouldBeFound("closedTimestamp.greaterThan=" + SMALLER_CLOSED_TIMESTAMP);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByFinalAmountIsEqualToSomething() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where finalAmount equals to DEFAULT_FINAL_AMOUNT
+        defaultBillShouldBeFound("finalAmount.equals=" + DEFAULT_FINAL_AMOUNT);
+
+        // Get all the billList where finalAmount equals to UPDATED_FINAL_AMOUNT
+        defaultBillShouldNotBeFound("finalAmount.equals=" + UPDATED_FINAL_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByFinalAmountIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where finalAmount not equals to DEFAULT_FINAL_AMOUNT
+        defaultBillShouldNotBeFound("finalAmount.notEquals=" + DEFAULT_FINAL_AMOUNT);
+
+        // Get all the billList where finalAmount not equals to UPDATED_FINAL_AMOUNT
+        defaultBillShouldBeFound("finalAmount.notEquals=" + UPDATED_FINAL_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByFinalAmountIsInShouldWork() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where finalAmount in DEFAULT_FINAL_AMOUNT or UPDATED_FINAL_AMOUNT
+        defaultBillShouldBeFound("finalAmount.in=" + DEFAULT_FINAL_AMOUNT + "," + UPDATED_FINAL_AMOUNT);
+
+        // Get all the billList where finalAmount equals to UPDATED_FINAL_AMOUNT
+        defaultBillShouldNotBeFound("finalAmount.in=" + UPDATED_FINAL_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByFinalAmountIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where finalAmount is not null
+        defaultBillShouldBeFound("finalAmount.specified=true");
+
+        // Get all the billList where finalAmount is null
+        defaultBillShouldNotBeFound("finalAmount.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByFinalAmountIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where finalAmount is greater than or equal to DEFAULT_FINAL_AMOUNT
+        defaultBillShouldBeFound("finalAmount.greaterThanOrEqual=" + DEFAULT_FINAL_AMOUNT);
+
+        // Get all the billList where finalAmount is greater than or equal to UPDATED_FINAL_AMOUNT
+        defaultBillShouldNotBeFound("finalAmount.greaterThanOrEqual=" + UPDATED_FINAL_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByFinalAmountIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where finalAmount is less than or equal to DEFAULT_FINAL_AMOUNT
+        defaultBillShouldBeFound("finalAmount.lessThanOrEqual=" + DEFAULT_FINAL_AMOUNT);
+
+        // Get all the billList where finalAmount is less than or equal to SMALLER_FINAL_AMOUNT
+        defaultBillShouldNotBeFound("finalAmount.lessThanOrEqual=" + SMALLER_FINAL_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByFinalAmountIsLessThanSomething() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where finalAmount is less than DEFAULT_FINAL_AMOUNT
+        defaultBillShouldNotBeFound("finalAmount.lessThan=" + DEFAULT_FINAL_AMOUNT);
+
+        // Get all the billList where finalAmount is less than UPDATED_FINAL_AMOUNT
+        defaultBillShouldBeFound("finalAmount.lessThan=" + UPDATED_FINAL_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    void getAllBillsByFinalAmountIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        billRepository.saveAndFlush(bill);
+
+        // Get all the billList where finalAmount is greater than DEFAULT_FINAL_AMOUNT
+        defaultBillShouldNotBeFound("finalAmount.greaterThan=" + DEFAULT_FINAL_AMOUNT);
+
+        // Get all the billList where finalAmount is greater than SMALLER_FINAL_AMOUNT
+        defaultBillShouldBeFound("finalAmount.greaterThan=" + SMALLER_FINAL_AMOUNT);
+    }
+
+    @Test
+    @Transactional
     void getAllBillsByProjectIsEqualToSomething() throws Exception {
         // Initialize the database
         billRepository.saveAndFlush(bill);
@@ -358,7 +585,9 @@ class BillResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(bill.getId().intValue())))
-            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)));
+            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
+            .andExpect(jsonPath("$.[*].closedTimestamp").value(hasItem(sameInstant(DEFAULT_CLOSED_TIMESTAMP))))
+            .andExpect(jsonPath("$.[*].finalAmount").value(hasItem(DEFAULT_FINAL_AMOUNT.doubleValue())));
 
         // Check, that the count call also returns 1
         restBillMockMvc
@@ -406,7 +635,7 @@ class BillResourceIT {
         Bill updatedBill = billRepository.findById(bill.getId()).get();
         // Disconnect from session so that the updates on updatedBill are not directly saved in db
         em.detach(updatedBill);
-        updatedBill.title(UPDATED_TITLE);
+        updatedBill.title(UPDATED_TITLE).closedTimestamp(UPDATED_CLOSED_TIMESTAMP).finalAmount(UPDATED_FINAL_AMOUNT);
         BillDTO billDTO = billMapper.toDto(updatedBill);
 
         restBillMockMvc
@@ -423,6 +652,8 @@ class BillResourceIT {
         assertThat(billList).hasSize(databaseSizeBeforeUpdate);
         Bill testBill = billList.get(billList.size() - 1);
         assertThat(testBill.getTitle()).isEqualTo(UPDATED_TITLE);
+        assertThat(testBill.getClosedTimestamp()).isEqualTo(UPDATED_CLOSED_TIMESTAMP);
+        assertThat(testBill.getFinalAmount()).isEqualTo(UPDATED_FINAL_AMOUNT);
 
         // Validate the Bill in Elasticsearch
         verify(mockBillSearchRepository).save(testBill);
@@ -532,6 +763,8 @@ class BillResourceIT {
         assertThat(billList).hasSize(databaseSizeBeforeUpdate);
         Bill testBill = billList.get(billList.size() - 1);
         assertThat(testBill.getTitle()).isEqualTo(DEFAULT_TITLE);
+        assertThat(testBill.getClosedTimestamp()).isEqualTo(DEFAULT_CLOSED_TIMESTAMP);
+        assertThat(testBill.getFinalAmount()).isEqualTo(DEFAULT_FINAL_AMOUNT);
     }
 
     @Test
@@ -546,7 +779,7 @@ class BillResourceIT {
         Bill partialUpdatedBill = new Bill();
         partialUpdatedBill.setId(bill.getId());
 
-        partialUpdatedBill.title(UPDATED_TITLE);
+        partialUpdatedBill.title(UPDATED_TITLE).closedTimestamp(UPDATED_CLOSED_TIMESTAMP).finalAmount(UPDATED_FINAL_AMOUNT);
 
         restBillMockMvc
             .perform(
@@ -562,6 +795,8 @@ class BillResourceIT {
         assertThat(billList).hasSize(databaseSizeBeforeUpdate);
         Bill testBill = billList.get(billList.size() - 1);
         assertThat(testBill.getTitle()).isEqualTo(UPDATED_TITLE);
+        assertThat(testBill.getClosedTimestamp()).isEqualTo(UPDATED_CLOSED_TIMESTAMP);
+        assertThat(testBill.getFinalAmount()).isEqualTo(UPDATED_FINAL_AMOUNT);
     }
 
     @Test
@@ -681,6 +916,8 @@ class BillResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(bill.getId().intValue())))
-            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)));
+            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
+            .andExpect(jsonPath("$.[*].closedTimestamp").value(hasItem(sameInstant(DEFAULT_CLOSED_TIMESTAMP))))
+            .andExpect(jsonPath("$.[*].finalAmount").value(hasItem(DEFAULT_FINAL_AMOUNT.doubleValue())));
     }
 }

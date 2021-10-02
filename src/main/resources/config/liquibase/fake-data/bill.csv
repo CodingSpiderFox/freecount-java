@@ -1,11 +1,11 @@
-id;title;project_id
-1;Berlin;1
-2;whiteboard;2
-3;Malediven Electronics;3
-4;Liaison;4
-5;Fantastic;5
-6;Sachsen;6
-7;extranet deposit;7
-8;Pizza;8
-9;synthesizing Incredible;9
-10;Senior input Facilitator;10
+id;title;closed_timestamp;final_amount;project_id
+1;Berlin;2021-10-01T15:30:59;37458;1
+2;Berkshire Bhutan teal;2021-09-30T17:57:34;15951;2
+3;Chair function;2021-10-01T13:45:16;55621;3
+4;quantify moderator Car;2021-10-01T14:16:32;85760;4
+5;Cambridgeshire Court project;2021-10-01T16:11:05;38056;5
+6;bus TCP multimedia;2021-09-30T18:54:33;21609;6
+7;models BEAC;2021-10-01T04:33:54;7591;7
+8;Producer input;2021-10-01T13:48:49;82603;8
+9;programming input;2021-10-01T09:11:46;31924;9
+10;Dollar;2021-10-01T07:04:59;48990;10

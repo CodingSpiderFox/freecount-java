@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
-import { Translate } from 'react-jhipster';
+import { Translate, TextFormat } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntity } from './bill.reducer';
@@ -35,6 +35,20 @@ export const BillDetail = (props: RouteComponentProps<{ id: string }>) => {
             </span>
           </dt>
           <dd>{billEntity.title}</dd>
+          <dt>
+            <span id="closedTimestamp">
+              <Translate contentKey="freecountApp.bill.closedTimestamp">Closed Timestamp</Translate>
+            </span>
+          </dt>
+          <dd>
+            {billEntity.closedTimestamp ? <TextFormat value={billEntity.closedTimestamp} type="date" format={APP_DATE_FORMAT} /> : null}
+          </dd>
+          <dt>
+            <span id="finalAmount">
+              <Translate contentKey="freecountApp.bill.finalAmount">Final Amount</Translate>
+            </span>
+          </dt>
+          <dd>{billEntity.finalAmount}</dd>
           <dt>
             <Translate contentKey="freecountApp.bill.project">Project</Translate>
           </dt>

@@ -330,7 +330,11 @@
             <artifactId>cucumber-spring</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- jhipster-needle-maven-add-dependency -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+        </dependency><!-- jhipster-needle-maven-add-dependency -->
     </dependencies>
 
     <build>

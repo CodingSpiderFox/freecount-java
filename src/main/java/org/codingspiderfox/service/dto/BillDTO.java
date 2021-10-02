@@ -1,6 +1,7 @@
 package org.codingspiderfox.service.dto;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import javax.validation.constraints.*;
 
@@ -13,6 +14,10 @@ public class BillDTO implements Serializable {
 
     @NotNull
     private String title;
+
+    private ZonedDateTime closedTimestamp;
+
+    private Double finalAmount;
 
     private ProjectDTO project;
 
@@ -30,6 +35,22 @@ public class BillDTO implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public ZonedDateTime getClosedTimestamp() {
+        return closedTimestamp;
+    }
+
+    public void setClosedTimestamp(ZonedDateTime closedTimestamp) {
+        this.closedTimestamp = closedTimestamp;
+    }
+
+    public Double getFinalAmount() {
+        return finalAmount;
+    }
+
+    public void setFinalAmount(Double finalAmount) {
+        this.finalAmount = finalAmount;
     }
 
     public ProjectDTO getProject() {
@@ -67,6 +88,8 @@ public class BillDTO implements Serializable {
         return "BillDTO{" +
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
+            ", closedTimestamp='" + getClosedTimestamp() + "'" +
+            ", finalAmount=" + getFinalAmount() +
             ", project=" + getProject() +
             "}";
     }

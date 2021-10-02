@@ -4,6 +4,15 @@
       "fieldName": "title",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "closedTimestamp",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": []
+    },
+    {
+      "fieldName": "finalAmount",
+      "fieldType": "Double"
     }
   ],
   "relationships": [

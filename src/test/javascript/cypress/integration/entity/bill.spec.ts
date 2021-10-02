@@ -105,6 +105,10 @@ describe('Bill e2e test', () => {
 
     cy.get(`[data-cy="title"]`).type('web-enabled').should('have.value', 'web-enabled');
 
+    cy.get(`[data-cy="closedTimestamp"]`).type('2021-10-01T02:33').should('have.value', '2021-10-01T02:33');
+
+    cy.get(`[data-cy="finalAmount"]`).type('17699').should('have.value', '17699');
+
     cy.setFieldSelectToLastOfEntity('project');
 
     cy.get(entityCreateSaveButtonSelector).click({ force: true });

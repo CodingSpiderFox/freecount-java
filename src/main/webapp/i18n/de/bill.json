@@ -20,6 +20,8 @@
       },
       "id": "ID",
       "title": "Title",
+      "closedTimestamp": "Closed Timestamp",
+      "finalAmount": "Final Amount",
       "project": "Project"
     }
   }

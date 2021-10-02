@@ -97,6 +97,12 @@ public class BillQueryService extends QueryService<Bill> {
             if (criteria.getTitle() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getTitle(), Bill_.title));
             }
+            if (criteria.getClosedTimestamp() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getClosedTimestamp(), Bill_.closedTimestamp));
+            }
+            if (criteria.getFinalAmount() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getFinalAmount(), Bill_.finalAmount));
+            }
             if (criteria.getProjectId() != null) {
                 specification =
                     specification.and(

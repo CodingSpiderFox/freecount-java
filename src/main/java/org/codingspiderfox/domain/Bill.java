@@ -1,6 +1,7 @@
 package org.codingspiderfox.domain;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -26,6 +27,12 @@ public class Bill implements Serializable {
     @NotNull
     @Column(name = "title", nullable = false)
     private String title;
+
+    @Column(name = "closed_timestamp")
+    private ZonedDateTime closedTimestamp;
+
+    @Column(name = "final_amount")
+    private Double finalAmount;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -57,6 +64,32 @@ public class Bill implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public ZonedDateTime getClosedTimestamp() {
+        return this.closedTimestamp;
+    }
+
+    public Bill closedTimestamp(ZonedDateTime closedTimestamp) {
+        this.setClosedTimestamp(closedTimestamp);
+        return this;
+    }
+
+    public void setClosedTimestamp(ZonedDateTime closedTimestamp) {
+        this.closedTimestamp = closedTimestamp;
+    }
+
+    public Double getFinalAmount() {
+        return this.finalAmount;
+    }
+
+    public Bill finalAmount(Double finalAmount) {
+        this.setFinalAmount(finalAmount);
+        return this;
+    }
+
+    public void setFinalAmount(Double finalAmount) {
+        this.finalAmount = finalAmount;
     }
 
     public Project getProject() {
@@ -97,6 +130,8 @@ public class Bill implements Serializable {
         return "Bill{" +
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
+            ", closedTimestamp='" + getClosedTimestamp() + "'" +
+            ", finalAmount=" + getFinalAmount() +
             "}";
     }
 }

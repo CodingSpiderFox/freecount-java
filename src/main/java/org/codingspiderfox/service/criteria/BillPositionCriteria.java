@@ -3,14 +3,10 @@ package org.codingspiderfox.service.criteria;
 import java.io.Serializable;
 import java.util.Objects;
 import tech.jhipster.service.Criteria;
-import tech.jhipster.service.filter.BooleanFilter;
 import tech.jhipster.service.filter.DoubleFilter;
 import tech.jhipster.service.filter.Filter;
-import tech.jhipster.service.filter.FloatFilter;
-import tech.jhipster.service.filter.IntegerFilter;
 import tech.jhipster.service.filter.LongFilter;
 import tech.jhipster.service.filter.StringFilter;
-import tech.jhipster.service.filter.ZonedDateTimeFilter;
 
 /**
  * Criteria class for the {@link org.codingspiderfox.domain.Bill} entity. This class is used
@@ -21,7 +17,7 @@ import tech.jhipster.service.filter.ZonedDateTimeFilter;
  * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
  * fix type specific filters.
  */
-public class BillCriteria implements Serializable, Criteria {
+public class BillPositionCriteria implements Serializable, Criteria {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,28 +25,25 @@ public class BillCriteria implements Serializable, Criteria {
 
     private StringFilter title;
 
-    private ZonedDateTimeFilter closedTimestamp;
+    private LongFilter billId;
 
-    private DoubleFilter finalAmount;
-
-    private LongFilter projectId;
+    private DoubleFilter cost;
 
     private Boolean distinct;
 
-    public BillCriteria() {}
+    public BillPositionCriteria() {}
 
-    public BillCriteria(BillCriteria other) {
+    public BillPositionCriteria(BillPositionCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
         this.title = other.title == null ? null : other.title.copy();
-        this.closedTimestamp = other.closedTimestamp == null ? null : other.closedTimestamp.copy();
-        this.finalAmount = other.finalAmount == null ? null : other.finalAmount.copy();
-        this.projectId = other.projectId == null ? null : other.projectId.copy();
+        this.billId = other.billId == null ? null : other.billId.copy();
+        this.cost = other.cost == null ? null : other.cost.copy();
         this.distinct = other.distinct;
     }
 
     @Override
-    public BillCriteria copy() {
-        return new BillCriteria(this);
+    public BillPositionCriteria copy() {
+        return new BillPositionCriteria(this);
     }
 
     public LongFilter getId() {
@@ -79,53 +72,16 @@ public class BillCriteria implements Serializable, Criteria {
         return title;
     }
 
+    public DoubleFilter getCost() {
+        return cost;
+    }
+
+    public void setCost(DoubleFilter cost) {
+        this.cost = cost;
+    }
+
     public void setTitle(StringFilter title) {
         this.title = title;
-    }
-
-    public ZonedDateTimeFilter getClosedTimestamp() {
-        return closedTimestamp;
-    }
-
-    public ZonedDateTimeFilter closedTimestamp() {
-        if (closedTimestamp == null) {
-            closedTimestamp = new ZonedDateTimeFilter();
-        }
-        return closedTimestamp;
-    }
-
-    public void setClosedTimestamp(ZonedDateTimeFilter closedTimestamp) {
-        this.closedTimestamp = closedTimestamp;
-    }
-
-    public DoubleFilter getFinalAmount() {
-        return finalAmount;
-    }
-
-    public DoubleFilter finalAmount() {
-        if (finalAmount == null) {
-            finalAmount = new DoubleFilter();
-        }
-        return finalAmount;
-    }
-
-    public void setFinalAmount(DoubleFilter finalAmount) {
-        this.finalAmount = finalAmount;
-    }
-
-    public LongFilter getProjectId() {
-        return projectId;
-    }
-
-    public LongFilter projectId() {
-        if (projectId == null) {
-            projectId = new LongFilter();
-        }
-        return projectId;
-    }
-
-    public void setProjectId(LongFilter projectId) {
-        this.projectId = projectId;
     }
 
     public Boolean getDistinct() {
@@ -144,20 +100,19 @@ public class BillCriteria implements Serializable, Criteria {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final BillCriteria that = (BillCriteria) o;
+        final BillPositionCriteria that = (BillPositionCriteria) o;
         return (
             Objects.equals(id, that.id) &&
             Objects.equals(title, that.title) &&
-            Objects.equals(closedTimestamp, that.closedTimestamp) &&
-            Objects.equals(finalAmount, that.finalAmount) &&
-            Objects.equals(projectId, that.projectId) &&
+            Objects.equals(billId, that.billId) &&
+            Objects.equals(cost, that.cost) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, closedTimestamp, finalAmount, projectId, distinct);
+        return Objects.hash(id, title, billId, cost, distinct);
     }
 
     // prettier-ignore
@@ -166,10 +121,17 @@ public class BillCriteria implements Serializable, Criteria {
         return "BillCriteria{" +
             (id != null ? "id=" + id + ", " : "") +
             (title != null ? "title=" + title + ", " : "") +
-            (closedTimestamp != null ? "closedTimestamp=" + closedTimestamp + ", " : "") +
-            (finalAmount != null ? "finalAmount=" + finalAmount + ", " : "") +
-            (projectId != null ? "projectId=" + projectId + ", " : "") +
+            (billId != null ? "billId=" + billId + ", " : "") +
+            (cost != null ? "cost=" + cost + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
+    }
+
+    public LongFilter getBillId() {
+        return billId;
+    }
+
+    public void setBillId(LongFilter billId) {
+        this.billId = billId;
     }
 }

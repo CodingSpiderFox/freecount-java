@@ -42,6 +42,8 @@ export const BillUpdate = (props: RouteComponentProps<{ id: string }>) => {
   }, [updateSuccess]);
 
   const saveEntity = values => {
+    values.closedTimestamp = convertDateTimeToServer(values.closedTimestamp);
+
     const entity = {
       ...billEntity,
       ...values,
@@ -57,9 +59,12 @@ export const BillUpdate = (props: RouteComponentProps<{ id: string }>) => {
 
   const defaultValues = () =>
     isNew
-      ? {}
+      ? {
+          closedTimestamp: displayDefaultDateTime(),
+        }
       : {
           ...billEntity,
+          closedTimestamp: convertDateTimeFromServer(billEntity.closedTimestamp),
           projectId: billEntity?.project?.id,
         };
 
@@ -97,6 +102,21 @@ export const BillUpdate = (props: RouteComponentProps<{ id: string }>) => {
                 validate={{
                   required: { value: true, message: translate('entity.validation.required') },
                 }}
+              />
+              <ValidatedField
+                label={translate('freecountApp.bill.closedTimestamp')}
+                id="bill-closedTimestamp"
+                name="closedTimestamp"
+                data-cy="closedTimestamp"
+                type="datetime-local"
+                placeholder="YYYY-MM-DD HH:mm"
+              />
+              <ValidatedField
+                label={translate('freecountApp.bill.finalAmount')}
+                id="bill-finalAmount"
+                name="finalAmount"
+                data-cy="finalAmount"
+                type="text"
               />
               <ValidatedField
                 id="bill-project"
