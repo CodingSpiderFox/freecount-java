@@ -9,6 +9,7 @@ import ProjectSettings from './project-settings';
 import Bill from './bill';
 import BillPosition from './bill-position';
 import ProjectMember from './project-member';
+import Product from './product';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 const Routes = ({ match }) => (
@@ -20,6 +21,7 @@ const Routes = ({ match }) => (
       <ErrorBoundaryRoute path={`${match.url}bill`} component={Bill} />
       <ErrorBoundaryRoute path={`${match.url}bill-position`} component={BillPosition} />
       <ErrorBoundaryRoute path={`${match.url}project-member`} component={ProjectMember} />
+      <ErrorBoundaryRoute path={`${match.url}product`} component={Product} />
       {/* jhipster-needle-add-route-path - JHipster will add routes here */}
     </Switch>
   </div>
