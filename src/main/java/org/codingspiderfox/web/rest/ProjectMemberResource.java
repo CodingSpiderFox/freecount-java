@@ -11,7 +11,6 @@ import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.codingspiderfox.repository.ProjectMemberRepository;
-import org.codingspiderfox.service.ProjectMemberCommandHandler;
 import org.codingspiderfox.service.ProjectMemberQueryService;
 import org.codingspiderfox.service.ProjectMemberService;
 import org.codingspiderfox.service.criteria.ProjectMemberCriteria;
@@ -51,25 +50,14 @@ public class ProjectMemberResource {
 
     private final ProjectMemberQueryService projectMemberQueryService;
 
-    private final ProjectMemberCommandHandler projectMemberCommandHandler;
-
     public ProjectMemberResource(
         ProjectMemberService projectMemberService,
         ProjectMemberRepository projectMemberRepository,
-        ProjectMemberQueryService projectMemberQueryService,
-        ProjectMemberCommandHandler projectMemberCommandHandler
+        ProjectMemberQueryService projectMemberQueryService
     ) {
         this.projectMemberService = projectMemberService;
         this.projectMemberRepository = projectMemberRepository;
         this.projectMemberQueryService = projectMemberQueryService;
-        this.projectMemberCommandHandler = projectMemberCommandHandler;
-    }
-
-    @PostMapping("/add-members-to-project")
-    public ResponseEntity<SuccessState> addMembersToProject(@RequestParam Long projectId, List<Long> newMemberIds) {
-
-        Boolean success = projectMemberCommandHandler.addMembersToProjectWithDefaultPermissions(projectId, newMemberIds);
-        return new ResponseEntity<>(new SuccessState(success), HttpStatus.OK);
     }
 
     /**

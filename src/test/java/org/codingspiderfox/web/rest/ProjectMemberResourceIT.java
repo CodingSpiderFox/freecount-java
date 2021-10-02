@@ -12,13 +12,11 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
-
 import org.codingspiderfox.IntegrationTest;
 import org.codingspiderfox.domain.Project;
 import org.codingspiderfox.domain.ProjectMember;
@@ -53,11 +51,11 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class ProjectMemberResourceIT {
 
-    private static final List<ProjectPermission> DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS = Arrays.asList(ProjectPermission.CLOSE_PROJECT);
-    private static final List<ProjectPermission> UPDATED_ADDITIONAL_PROJECT_PERMISSIONS = Arrays.asList(ProjectPermission.CLOSE_BILL);
+    private static final ProjectPermission DEFAULT_ADDITIONAL_PROJECT_PERMISSIONS = ProjectPermission.CLOSE_PROJECT;
+    private static final ProjectPermission UPDATED_ADDITIONAL_PROJECT_PERMISSIONS = ProjectPermission.CLOSE_BILL;
 
-    private static final List<ProjectMemberRole> DEFAULT_ROLE_IN_PROJECT = Arrays.asList(ProjectMemberRole.PROJECT_ADMIN);
-    private static final List<ProjectMemberRole> UPDATED_ROLE_IN_PROJECT = Arrays.asList(ProjectMemberRole.BILL_CONTRIBUTOR);
+    private static final ProjectMemberRole DEFAULT_ROLE_IN_PROJECT = ProjectMemberRole.PROJECT_ADMIN;
+    private static final ProjectMemberRole UPDATED_ROLE_IN_PROJECT = ProjectMemberRole.BILL_CONTRIBUTOR;
 
     private static final ZonedDateTime DEFAULT_ADDED_TIMESTAMP = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_ADDED_TIMESTAMP = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
@@ -94,7 +92,7 @@ class ProjectMemberResourceIT {
 
     /**
      * Create an entity for this test.
-     * <p>
+     *
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
@@ -118,7 +116,7 @@ class ProjectMemberResourceIT {
 
     /**
      * Create an updated entity for this test.
-     * <p>
+     *
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
@@ -215,9 +213,8 @@ class ProjectMemberResourceIT {
         // Disconnect from session so that the updates on updatedProjectMember are not directly saved in db
         em.detach(updatedProjectMember);
 
-        Project project = new Project();
         // Update the Project with new association value
-        updatedProjectMember.setProject(project);
+        updatedProjectMember.setProject();
         ProjectMemberDTO updatedProjectMemberDTO = projectMemberMapper.toDto(updatedProjectMember);
         assertThat(updatedProjectMemberDTO).isNotNull();
 

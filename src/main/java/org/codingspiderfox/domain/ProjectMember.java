@@ -2,10 +2,8 @@ package org.codingspiderfox.domain;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.*;
-
 import org.codingspiderfox.domain.enumeration.ProjectMemberRole;
 import org.codingspiderfox.domain.enumeration.ProjectPermission;
 import org.hibernate.annotations.Cache;
@@ -27,18 +25,14 @@ public class ProjectMember implements Serializable {
     private Long id;
 
     @NotNull
-    @ElementCollection(targetClass = ProjectPermission.class)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_additional_project_permission")
     @Column(name = "additional_project_permissions", nullable = false)
-    private List<ProjectPermission> additionalProjectPermissions;
+    private ProjectPermission additionalProjectPermissions;
 
     @NotNull
-    @ElementCollection(targetClass = ProjectMemberRole.class)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_role_in_project")
     @Column(name = "role_in_project", nullable = false)
-    private List<ProjectMemberRole> roleInProject;
+    private ProjectMemberRole roleInProject;
 
     @NotNull
     @Column(name = "added_timestamp", nullable = false)
@@ -68,29 +62,29 @@ public class ProjectMember implements Serializable {
         this.id = id;
     }
 
-    public List<ProjectPermission> getAdditionalProjectPermissions() {
+    public ProjectPermission getAdditionalProjectPermissions() {
         return this.additionalProjectPermissions;
     }
 
-    public ProjectMember additionalProjectPermissions(List<ProjectPermission> additionalProjectPermissions) {
+    public ProjectMember additionalProjectPermissions(ProjectPermission additionalProjectPermissions) {
         this.setAdditionalProjectPermissions(additionalProjectPermissions);
         return this;
     }
 
-    public void setAdditionalProjectPermissions(List<ProjectPermission> additionalProjectPermissions) {
+    public void setAdditionalProjectPermissions(ProjectPermission additionalProjectPermissions) {
         this.additionalProjectPermissions = additionalProjectPermissions;
     }
 
-    public List<ProjectMemberRole> getRoleInProject() {
+    public ProjectMemberRole getRoleInProject() {
         return this.roleInProject;
     }
 
-    public ProjectMember roleInProject(List<ProjectMemberRole> roleInProject) {
+    public ProjectMember roleInProject(ProjectMemberRole roleInProject) {
         this.setRoleInProject(roleInProject);
         return this;
     }
 
-    public void setRoleInProject(List<ProjectMemberRole> roleInProject) {
+    public void setRoleInProject(ProjectMemberRole roleInProject) {
         this.roleInProject = roleInProject;
     }
 
