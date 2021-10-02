@@ -7,8 +7,9 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link BillPosition} and its DTO {@link BillPositionDTO}.
  */
-@Mapper(componentModel = "spring", uses = { BillMapper.class })
+@Mapper(componentModel = "spring", uses = { BillMapper.class, ProductMapper.class })
 public interface BillPositionMapper extends EntityMapper<BillPositionDTO, BillPosition> {
     @Mapping(target = "bill", source = "bill", qualifiedByName = "id")
+    @Mapping(target = "product", source = "product", qualifiedByName = "id")
     BillPositionDTO toDto(BillPosition s);
 }

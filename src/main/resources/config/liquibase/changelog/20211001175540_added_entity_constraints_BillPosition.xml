@@ -13,5 +13,11 @@
                                  constraintName="fk_bill_position__bill_id"
                                  referencedColumnNames="id"
                                  referencedTableName="bill"/>
+
+        <addForeignKeyConstraint baseColumnNames="id"
+                                 baseTableName="bill_position"
+                                 constraintName="fk_bill_position__product_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="product"/>
     </changeSet>
 </databaseChangeLog>

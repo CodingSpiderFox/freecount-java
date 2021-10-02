@@ -22,7 +22,8 @@
       "title": "Title",
       "cost": "Cost",
       "order": "Order",
-      "bill": "Bill"
+      "bill": "Bill",
+      "product": "Product"
     }
   }
 }

@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IBill } from 'app/shared/model/bill.model';
 import { getEntities as getBills } from 'app/entities/bill/bill.reducer';
+import { IProduct } from 'app/shared/model/product.model';
+import { getEntities as getProducts } from 'app/entities/product/product.reducer';
 import { getEntity, updateEntity, createEntity, reset } from './bill-position.reducer';
 import { IBillPosition } from 'app/shared/model/bill-position.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
@@ -18,6 +20,7 @@ export const BillPositionUpdate = (props: RouteComponentProps<{ id: string }>) =
   const [isNew] = useState(!props.match.params || !props.match.params.id);
 
   const bills = useAppSelector(state => state.bill.entities);
+  const products = useAppSelector(state => state.product.entities);
   const billPositionEntity = useAppSelector(state => state.billPosition.entity);
   const loading = useAppSelector(state => state.billPosition.loading);
   const updating = useAppSelector(state => state.billPosition.updating);
@@ -33,6 +36,7 @@ export const BillPositionUpdate = (props: RouteComponentProps<{ id: string }>) =
     }
 
     dispatch(getBills({}));
+    dispatch(getProducts({}));
   }, []);
 
   useEffect(() => {
@@ -46,6 +50,7 @@ export const BillPositionUpdate = (props: RouteComponentProps<{ id: string }>) =
       ...billPositionEntity,
       ...values,
       bill: bills.find(it => it.id.toString() === values.billId.toString()),
+      product: products.find(it => it.id.toString() === values.productId.toString()),
     };
 
     if (isNew) {
@@ -61,6 +66,7 @@ export const BillPositionUpdate = (props: RouteComponentProps<{ id: string }>) =
       : {
           ...billPositionEntity,
           billId: billPositionEntity?.bill?.id,
+          productId: billPositionEntity?.product?.id,
         };
 
   return (
@@ -140,6 +146,22 @@ export const BillPositionUpdate = (props: RouteComponentProps<{ id: string }>) =
               <FormText>
                 <Translate contentKey="entity.validation.required">This field is required.</Translate>
               </FormText>
+              <ValidatedField
+                id="bill-position-product"
+                name="productId"
+                data-cy="product"
+                label={translate('freecountApp.billPosition.product')}
+                type="select"
+              >
+                <option value="" key="0" />
+                {products
+                  ? products.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.id}
+                      </option>
+                    ))
+                  : null}
+              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/bill-position" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

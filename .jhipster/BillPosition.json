@@ -23,6 +23,15 @@
       "relationshipType": "many-to-one",
       "relationshipValidateRules": ["required"],
       "otherEntityField": "id"
+    },
+    {
+      "relationshipName": "product",
+      "otherEntityName": "product",
+      "relationshipType": "one-to-one",
+      "otherEntityField": "id",
+      "ownerSide": true,
+      "id": true,
+      "otherEntityRelationshipName": "billPosition"
     }
   ],
   "service": "serviceImpl",

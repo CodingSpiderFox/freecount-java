@@ -22,6 +22,8 @@ public class BillPositionDTO implements Serializable {
 
     private BillDTO bill;
 
+    private ProductDTO product;
+
     public Long getId() {
         return id;
     }
@@ -62,6 +64,14 @@ public class BillPositionDTO implements Serializable {
         this.bill = bill;
     }
 
+    public ProductDTO getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductDTO product) {
+        this.product = product;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -92,6 +102,7 @@ public class BillPositionDTO implements Serializable {
             ", cost=" + getCost() +
             ", order=" + getOrder() +
             ", bill=" + getBill() +
+            ", product=" + getProduct() +
             "}";
     }
 }

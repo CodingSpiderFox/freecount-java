@@ -19,8 +19,6 @@ public class BillPosition implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
     @Column(name = "id")
     private Long id;
 
@@ -40,6 +38,11 @@ public class BillPosition implements Serializable {
     @NotNull
     @JsonIgnoreProperties(value = { "project" }, allowSetters = true)
     private Bill bill;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
+    private Product product;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -105,6 +108,19 @@ public class BillPosition implements Serializable {
 
     public BillPosition bill(Bill bill) {
         this.setBill(bill);
+        return this;
+    }
+
+    public Product getProduct() {
+        return this.product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public BillPosition product(Product product) {
+        this.setProduct(product);
         return this;
     }
 

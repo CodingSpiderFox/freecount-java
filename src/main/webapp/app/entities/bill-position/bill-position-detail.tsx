@@ -51,6 +51,10 @@ export const BillPositionDetail = (props: RouteComponentProps<{ id: string }>) =
             <Translate contentKey="freecountApp.billPosition.bill">Bill</Translate>
           </dt>
           <dd>{billPositionEntity.bill ? billPositionEntity.bill.id : ''}</dd>
+          <dt>
+            <Translate contentKey="freecountApp.billPosition.product">Product</Translate>
+          </dt>
+          <dd>{billPositionEntity.product ? billPositionEntity.product.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/bill-position" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

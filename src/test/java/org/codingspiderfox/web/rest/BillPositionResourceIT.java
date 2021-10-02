@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import org.codingspiderfox.IntegrationTest;
 import org.codingspiderfox.domain.Bill;
 import org.codingspiderfox.domain.BillPosition;
+import org.codingspiderfox.domain.Product;
 import org.codingspiderfox.repository.BillPositionRepository;
 import org.codingspiderfox.repository.search.BillPositionSearchRepository;
 import org.codingspiderfox.service.dto.BillPositionDTO;
@@ -98,6 +99,16 @@ class BillPositionResourceIT {
             bill = TestUtil.findAll(em, Bill.class).get(0);
         }
         billPosition.setBill(bill);
+        // Add required entity
+        Product product;
+        if (TestUtil.findAll(em, Product.class).isEmpty()) {
+            product = ProductResourceIT.createEntity(em);
+            em.persist(product);
+            em.flush();
+        } else {
+            product = TestUtil.findAll(em, Product.class).get(0);
+        }
+        billPosition.setProduct(product);
         return billPosition;
     }
 
@@ -119,6 +130,16 @@ class BillPositionResourceIT {
             bill = TestUtil.findAll(em, Bill.class).get(0);
         }
         billPosition.setBill(bill);
+        // Add required entity
+        Product product;
+        if (TestUtil.findAll(em, Product.class).isEmpty()) {
+            product = ProductResourceIT.createUpdatedEntity(em);
+            em.persist(product);
+            em.flush();
+        } else {
+            product = TestUtil.findAll(em, Product.class).get(0);
+        }
+        billPosition.setProduct(product);
         return billPosition;
     }
 
@@ -150,6 +171,9 @@ class BillPositionResourceIT {
         assertThat(testBillPosition.getCost()).isEqualTo(DEFAULT_COST);
         assertThat(testBillPosition.getOrder()).isEqualTo(DEFAULT_ORDER);
 
+        // Validate the id for MapsId, the ids must be same
+        assertThat(testBillPosition.getId()).isEqualTo(testBillPosition.getProduct().getId());
+
         // Validate the BillPosition in Elasticsearch
         verify(mockBillPositionSearchRepository, times(1)).save(testBillPosition);
     }
@@ -179,6 +203,48 @@ class BillPositionResourceIT {
 
         // Validate the BillPosition in Elasticsearch
         verify(mockBillPositionSearchRepository, times(0)).save(billPosition);
+    }
+
+    @Test
+    @Transactional
+    void updateBillPositionMapsIdAssociationWithNewId() throws Exception {
+        // Initialize the database
+        billPositionRepository.saveAndFlush(billPosition);
+        int databaseSizeBeforeCreate = billPositionRepository.findAll().size();
+
+        // Load the billPosition
+        BillPosition updatedBillPosition = billPositionRepository.findById(billPosition.getId()).get();
+        assertThat(updatedBillPosition).isNotNull();
+        // Disconnect from session so that the updates on updatedBillPosition are not directly saved in db
+        em.detach(updatedBillPosition);
+
+        // Update the Product with new association value
+        updatedBillPosition.setProduct();
+        BillPositionDTO updatedBillPositionDTO = billPositionMapper.toDto(updatedBillPosition);
+        assertThat(updatedBillPositionDTO).isNotNull();
+
+        // Update the entity
+        restBillPositionMockMvc
+            .perform(
+                put(ENTITY_API_URL_ID, updatedBillPositionDTO.getId())
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtil.convertObjectToJsonBytes(updatedBillPositionDTO))
+            )
+            .andExpect(status().isOk());
+
+        // Validate the BillPosition in the database
+        List<BillPosition> billPositionList = billPositionRepository.findAll();
+        assertThat(billPositionList).hasSize(databaseSizeBeforeCreate);
+        BillPosition testBillPosition = billPositionList.get(billPositionList.size() - 1);
+
+        // Validate the id for MapsId, the ids must be same
+        // Uncomment the following line for assertion. However, please note that there is a known issue and uncommenting will fail the test.
+        // Please look at https://github.com/jhipster/generator-jhipster/issues/9100. You can modify this test as necessary.
+        // assertThat(testBillPosition.getId()).isEqualTo(testBillPosition.getProduct().getId());
+
+        // Validate the BillPosition in Elasticsearch
+        verify(mockBillPositionSearchRepository).save(billPosition);
     }
 
     @Test

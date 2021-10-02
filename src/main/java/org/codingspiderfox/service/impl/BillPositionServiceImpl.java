@@ -5,6 +5,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 import java.util.Optional;
 import org.codingspiderfox.domain.BillPosition;
 import org.codingspiderfox.repository.BillPositionRepository;
+import org.codingspiderfox.repository.ProductRepository;
 import org.codingspiderfox.repository.search.BillPositionSearchRepository;
 import org.codingspiderfox.service.BillPositionService;
 import org.codingspiderfox.service.dto.BillPositionDTO;
@@ -31,20 +32,26 @@ public class BillPositionServiceImpl implements BillPositionService {
 
     private final BillPositionSearchRepository billPositionSearchRepository;
 
+    private final ProductRepository productRepository;
+
     public BillPositionServiceImpl(
         BillPositionRepository billPositionRepository,
         BillPositionMapper billPositionMapper,
-        BillPositionSearchRepository billPositionSearchRepository
+        BillPositionSearchRepository billPositionSearchRepository,
+        ProductRepository productRepository
     ) {
         this.billPositionRepository = billPositionRepository;
         this.billPositionMapper = billPositionMapper;
         this.billPositionSearchRepository = billPositionSearchRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
     public BillPositionDTO save(BillPositionDTO billPositionDTO) {
         log.debug("Request to save BillPosition : {}", billPositionDTO);
         BillPosition billPosition = billPositionMapper.toEntity(billPositionDTO);
+        Long productId = billPositionDTO.getProduct().getId();
+        productRepository.findById(productId).ifPresent(billPosition::product);
         billPosition = billPositionRepository.save(billPosition);
         BillPositionDTO result = billPositionMapper.toDto(billPosition);
         billPositionSearchRepository.save(billPosition);

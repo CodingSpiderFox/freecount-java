@@ -203,6 +203,9 @@ export const BillPosition = (props: RouteComponentProps<{ url: string }>) => {
                   <th>
                     <Translate contentKey="freecountApp.billPosition.bill">Bill</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
+                  <th>
+                    <Translate contentKey="freecountApp.billPosition.product">Product</Translate> <FontAwesomeIcon icon="sort" />
+                  </th>
                   <th />
                 </tr>
               </thead>
@@ -218,6 +221,7 @@ export const BillPosition = (props: RouteComponentProps<{ url: string }>) => {
                     <td>{billPosition.cost}</td>
                     <td>{billPosition.order}</td>
                     <td>{billPosition.bill ? <Link to={`bill/${billPosition.bill.id}`}>{billPosition.bill.id}</Link> : ''}</td>
+                    <td>{billPosition.product ? <Link to={`product/${billPosition.product.id}`}>{billPosition.product.id}</Link> : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${billPosition.id}`} color="info" size="sm" data-cy="entityDetailsButton">

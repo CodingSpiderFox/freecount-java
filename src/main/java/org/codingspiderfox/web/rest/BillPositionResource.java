@@ -65,6 +65,9 @@ public class BillPositionResource {
         if (billPositionDTO.getId() != null) {
             throw new BadRequestAlertException("A new billPosition cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        if (Objects.isNull(billPositionDTO.getProduct())) {
+            throw new BadRequestAlertException("Invalid association value provided", ENTITY_NAME, "null");
+        }
         BillPositionDTO result = billPositionService.save(billPositionDTO);
         return ResponseEntity
             .created(new URI("/api/bill-positions/" + result.getId()))
