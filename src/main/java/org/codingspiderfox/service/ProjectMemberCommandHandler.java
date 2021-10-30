@@ -95,7 +95,7 @@ public class ProjectMemberCommandHandler {
         projectAdminRoleAssignment.setProjectMemberRoles(rolesSet);
         projectAdminRoleAssignment.setAssignmentTimestamp(ZonedDateTime.now());
         projectAdminRoleAssignment.setProjectMember(creatorAsAdminMemberOfProject);
-        projectMemberRoleAssignmentRepository.save(projectAdminRoleAssignment);
+        projectMemberRoleAssignmentRepository.saveAndFlush(projectAdminRoleAssignment);
 
         return creatorAsAdminMemberOfProject;
     }
@@ -173,6 +173,6 @@ public class ProjectMemberCommandHandler {
     private Future<Boolean> checkCurrentUserHasPermissionToAddMemberToProject(String currentUserLogin, Long projectId) {
         Future<Boolean> hasAddMemberPermission = executor.submit(() -> projectMemberPermissionAssignmentQueryService.hasAddMemberPermissionAssignmentForProjectIdAndUserLogin(currentUserLogin, projectId));
         Future<Boolean> hasRoleThatAllowsToAddMemberToProject = executor.submit(() -> projectMemberRoleAssignmentQueryService.hasRoleAssignmentForProjectAndUserThatAllowsAddingMembersToProject(currentUserLogin, projectId));
-        return executor.submit(() -> hasAddMemberPermission.get() && hasRoleThatAllowsToAddMemberToProject.get());
+        return executor.submit(() -> hasAddMemberPermission.get() || hasRoleThatAllowsToAddMemberToProject.get());
     }
 }

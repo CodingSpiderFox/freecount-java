@@ -1,42 +1,21 @@
 package org.codingspiderfox.service;
 
 import lombok.SneakyThrows;
-import org.checkerframework.checker.units.UnitsTools;
 import org.codingspiderfox.IntegrationTest;
-import org.codingspiderfox.domain.FinanceAccount;
-import org.codingspiderfox.domain.Project;
-import org.codingspiderfox.domain.ProjectMember;
-import org.codingspiderfox.domain.ProjectMemberPermission;
-import org.codingspiderfox.domain.ProjectMemberPermissionAssignment;
-import org.codingspiderfox.domain.ProjectMemberPermissionAssignment_;
-import org.codingspiderfox.domain.ProjectMemberRole;
-import org.codingspiderfox.domain.ProjectMemberRoleAssignment;
-import org.codingspiderfox.domain.User;
-import org.codingspiderfox.repository.FinanceAccountRepository;
-import org.codingspiderfox.repository.ProjectMemberPermissionAssignmentRepository;
-import org.codingspiderfox.repository.ProjectMemberPermissionRepository;
-import org.codingspiderfox.repository.ProjectMemberRepository;
-import org.codingspiderfox.repository.ProjectMemberRoleAssignmentRepository;
-import org.codingspiderfox.repository.ProjectMemberRoleRepository;
-import org.codingspiderfox.repository.ProjectRepository;
-import org.codingspiderfox.repository.UserRepository;
+import org.codingspiderfox.domain.*;
+import org.codingspiderfox.repository.*;
 import org.codingspiderfox.service.dto.CreateProjectMemberDTO;
 import org.codingspiderfox.service.dto.ProjectDTO;
-import org.codingspiderfox.service.dto.ProjectMemberDTO;
-import org.codingspiderfox.service.dto.UserDTO;
 import org.codingspiderfox.service.mapper.ProjectMapper;
 import org.codingspiderfox.service.mapper.ProjectMemberMapper;
 import org.codingspiderfox.web.rest.TestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -49,8 +28,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @IntegrationTest
-@Transactional
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class TwoUsersFullIntegrationTest {
@@ -121,10 +98,7 @@ class TwoUsersFullIntegrationTest {
 
     @SneakyThrows
     @Test
-    @Transactional
     void createProjectAndCalculateBillSucceeds() {
-        List<User> users = userRepository.findAll();
-
         ProjectDTO projectDTO = projectMapper.toDto(project);
         mockMvc
             .perform(
@@ -139,7 +113,6 @@ class TwoUsersFullIntegrationTest {
         assertEquals("projectabcd", project.getKey());
 
         List<ProjectMemberRole> projectMemberRoles = projectMemberRoleRepository.findAll();
-        List<ProjectMemberPermission> projectMemberPermissions = projectMemberPermissionRepository.findAll();
 
         assertEquals(1, projectMemberRoles.size());
 

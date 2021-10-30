@@ -39,7 +39,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://localhost:5432/freecount
     username: freecount
-    password:
+    password: freecount
     hikari:
       poolName: Hikari
       auto-commit: false

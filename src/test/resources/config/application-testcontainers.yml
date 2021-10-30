@@ -14,7 +14,7 @@ spring:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:postgresql:13.4:///freecount?TC_TMPFS=/testtmpfs:rw
     username: freecount
-    password:
+    password: freecount
     hikari:
       poolName: Hikari
       auto-commit: false
